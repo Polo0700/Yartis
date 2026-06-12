@@ -1,0 +1,17 @@
+{
+  "parallel": 2,
+  "tasks": [
+    {
+      "id": "code-explainer",
+      "agent": "general",
+      "prompt": "Lee el archivo D:\\Users\\Usuario1\\Downloads\\Yardis\\.opencode\\agent\\multiagent.py. Explícame función por función: qué hace cada una, cómo se conectan entre sí, el flujo principal, y anota cada función con un comentario breve al lado de su definición (simulado). Devuélveme:\n\n1. Lista de funciones con nombre, línea y qué hace\n2. El flujo principal (main → qué llama qué)\n3. Las partes clave: cómo spawnéa agentes, cómo maneja --detach, cómo escribe logs, cómo funciona la memoria compartida\n4. Las anotaciones que le pondrías a cada función como comentario",
+      "deps": []
+    },
+    {
+      "id": "doc-research",
+      "agent": "general",
+      "prompt": "Investiga y explícame estos conceptos técnicos relacionados con el script multiagent.py en Windows:\n\n1. CREATE_NO_WINDOW (0x08000000) — ¿qué es exactamente? ¿cómo funciona con cmd.exe? ¿qué pasa con los subprocesos hijos cuando el padre tiene esta flag?\n\n2. asyncio.create_subprocess_shell vs create_subprocess_exec en Windows — diferencias, cuándo usar cada uno, cómo manejan el PATH\n\n3. pythonw.exe vs python.exe — diferencias, consola, y por qué usamos pythonw.exe para --detach\n\n4. subprocess.CREATE_NO_WINDOW con asyncio — ¿cómo se pasa? ¿por qué funciona (kwargs → Popen)?\n\n5. ¿Qué alternativas hay para ocultar ventanas en Windows? (startupinfo, DETACHED_PROCESS, etc.)\n\nDevuélveme una explicación clara y práctica de cada punto.",
+      "deps": []
+    }
+  ]
+}

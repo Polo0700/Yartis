@@ -1,0 +1,27 @@
+body {
+  background-color: plum;
+  color: black;
+}
+button {
+  width: 50px;
+  height: 50px;
+  border: none;
+  background-color: blue;
+}
+.popup {
+  position: fixed;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  border-radius: 0;
+  width: 100%;
+  height: 100vh;
+  background: #1a1a2e;
+  color: white;
+  background: linear-gradient(
+    to bottom,
+    red,
+    rgba(255, 0, 0, 0.684),
+    rgba(255, 0, 0, 0.656)
+  );
+}

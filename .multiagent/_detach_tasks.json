@@ -1,0 +1,12 @@
+{
+  "project": "Yardis",
+  "parallel": 1,
+  "tasks": [
+    {
+      "id": "1",
+      "agent": "python-expert",
+      "prompt": "Investiga sobre cómo practicar y mejorar la habilidad de escribir buenos comentarios y código limpio. Necesito:\n\n1. **Ejercicios prácticos** para mejorar — refactorizar código quitando comentarios, code review enfocado en comentarios\n2. **Anti-patrones comunes** de comentar — comentar lo obvio, comentar 'parches', comentarios fuera de sincronía\n3. **Checklist de auto-revisión** — preguntas para hacerse antes de escribir un comentario\n4. **Cómo entrenar el ojo** para detectar malos comentarios en code reviews ajenos\n5. **Recursos** — libros (Clean Code, etc), herramientas, blogs sobre el tema\n6. **Ritual diario** — pequeña práctica de 5 minutos para mejorar\n\nDevuélvemelo como una guía práctica con tips accionables.",
+      "deps": []
+    }
+  ]
+}

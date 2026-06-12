@@ -20,3 +20,8 @@ class server:
         async with websockets.serve(self.handler, self.host, self.port):
             print(f"servidor en ws://{self.host}:{self.port}")
             await asyncio.Future()
+
+
+if __name__ == "__main__":
+    s = server()
+    asyncio.run(s.start())

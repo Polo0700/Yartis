@@ -11,4 +11,9 @@
 | 06-Jun-2026 | ⭐ 7 | Fundamentos de Rust: ownership, `String` vs `&str`, `Command` para procesos, `Read` trait. Decisión de arquitectura: **WebSocket** para comunicación Rust ↔ Python (en vez de sidecar). Creación de `core/server.py` con handler WebSocket básico. ⚡ |
 | 07-Jun-2026 | ⭐ 8 | Diagnóstico de error rust-analyzer (no encuentra Cargo.toml en raíz). Confirmación de proyecto Tauri existente en `beta/Yartis/`. Plan claro: entrenar wake word custom → subir a git → integrar con Rust. Pendiente: grabar samples de "YARTIS" y entrenar modelo. ✅ |
 | 08-Jun-2026 | ⭐ 9 | 🦀 **Rust en serio**: `lib.rs` completado con conexión WebSocket + split + while let + emit a React. Perfil `rust-expert.md` creado. Skill `rust-engineer` instalado. Plugin **Superpowers** instalado. Regla de pausa de dudas agregada. Conceptos: `Result`, `?`, pattern matching, `while let`, `split`, `emit`. ✅ |
+| 09-Jun-2026 | ⭐ 10 | 🦀 Continuación Rust — ajustes finos en WebSocket y sidecar |
+| 10-Jun-2026 | ⭐ 11 | 🐍 Pulido Python — limpieza de código en core/audio.py y brain/ |
+| 11-Jun-2026 | ⭐ 12 | ⚛️ Primeros pasos con React — componentes ChangeSize + setup Tauri |
+| 12-Jun-2026 | ⭐ 13 | 🔧 React + ajustes varios |
+| 13-Jun-2026 | ⭐ 14 | 🎨 **UI del asistente**: Hook `useAssistant` con ciclo demo de estados (wait→hearing→processing→speaking). Componente `StatusIndicator` con círculo tipo JARVIS + ondas expansivas por CSS. Estructura separada: hook (lógica) / componente (vista) / CSS (animaciones). Pendiente: conectar en App.tsx y probar. ✅ |
 

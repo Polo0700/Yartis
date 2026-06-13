@@ -1,0 +1,89 @@
+/* ============================================
+   STATUS INDICATOR — Círculo tipo JARVIS
+   ============================================ */
+
+/* --- CONTENEDOR PRINCIPAL --- */
+/* solo posiciona a los hijos (círculo + ondas) */
+.status-indicator {
+  position: relative;      /* las ondas usan position:absolute dentro de esto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+}
+
+/* --- CÍRCULO CENTRAL (base) --- */
+.circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;     /* lo hace redondo */
+  z-index: 2;              /* queda encima de las ondas */
+  transition: background 0.3s;  /* transición suave al cambiar color */
+}
+
+/* --- ONDAS EXPANSIVAS (base) --- */
+.wave {
+  position: absolute;      /* se posicionan relativo al contenedor */
+  border-radius: 50%;      /* redondas como el círculo */
+  width: 60px;
+  height: 60px;
+  opacity: 0;              /* invisibles hasta que la animación las muestre */
+  border: 2px solid white; /* el color lo heredan del estado */
+  animation: wavePulse 2s infinite;  /* animación compartida */
+}
+
+/* cada onda arranca con un delay diferente para efecto escalonado */
+.wave-1 { animation-delay: 0s; }
+.wave-2 { animation-delay: 0.6s; }
+.wave-3 { animation-delay: 1.2s; }
+
+/* --- COLORES POR ESTADO --- */
+/* el círculo cambia de color según el estado */
+/* las ondas usan border del mismo color */
+
+/* 🟤 wait — modo reposo, gris tenue */
+.status-indicator.wait .circle {
+  background: #555;
+}
+.status-indicator.wait .wave {
+  border-color: #555;
+}
+
+/* 🟢 hearing — escuchando, verde brillante */
+.status-indicator.hearing .circle {
+  background: #00ff88;
+}
+.status-indicator.hearing .wave {
+  border-color: #00ff88;
+}
+
+/* 🟠 processing — pensando, naranja */
+.status-indicator.processing .circle {
+  background: #ff8800;
+}
+.status-indicator.processing .wave {
+  border-color: #ff8800;
+}
+
+/* 🟣 speaking — hablando, púrpura */
+.status-indicator.speaking .circle {
+  background: #aa44ff;
+}
+.status-indicator.speaking .wave {
+  border-color: #aa44ff;
+}
+
+/* --- ANIMACIONES --- */
+
+/* onda expansiva: crece y se desvanece */
+@keyframes wavePulse {
+  0% {
+    transform: scale(1);   /* tamaño original */
+    opacity: 0.6;          /* medio visible */
+  }
+  100% {
+    transform: scale(3);   /* crece 3x */
+    opacity: 0;            /* desaparece */
+  }
+}

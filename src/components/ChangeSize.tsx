@@ -1,25 +1,27 @@
 import "./ChangeSize.css";
 import { getCurrentWebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { LogicalPosition, LogicalSize } from "@tauri-apps/api/dpi";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+const pestaña = getCurrentWebviewWindow();
 function ChangeSizeWindow() {
   const [cambiarEstado, cambiarEstadoSet] = useState(true);
   useEffect(() => {
-    const pestaña = getCurrentWebviewWindow();
     pestaña.setSize(new LogicalSize(180, 180));
     pestaña.setPosition(new LogicalPosition(window.screen.width - 200, 20));
   }, []);
   if (cambiarEstado == false) {
     return null;
   }
+  const handleDragStart = (e: React.MouseEvent) => {
+    if ((e.target as HTMLElement).closest("button")) return;
+    pestaña.startDragging();
+  };
   return (
     <div className="popup">
-      <span>Pop-up</span>
-      <span>
-        {window.screen.width} x {window.screen.height}
-      </span>
-      <button onClick={() => getCurrentWebviewWindow().hide()}>fondo</button>
-      <button onClick={() => cambiarEstadoSet(false)}>close</button>
+      <div className="top" onMouseDown={handleDragStart}>
+        <button onClick={() => pestaña.hide()}>fondo</button>
+        <button onClick={() => cambiarEstadoSet(false)}>close</button>
+      </div>
     </div>
   );
 }

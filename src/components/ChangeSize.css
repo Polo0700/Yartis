@@ -1,6 +1,7 @@
 body {
   background-color: plum;
   color: black;
+  margin: 0;
 }
 button {
   width: 50px;
@@ -10,9 +11,7 @@ button {
 }
 .popup {
   position: fixed;
-  bottom: 0;
-  top: 0;
-  right: 0;
+  inset: 0;
   border-radius: 0;
   width: 100%;
   height: 100vh;
@@ -24,4 +23,13 @@ button {
     rgba(255, 0, 0, 0.684),
     rgba(255, 0, 0, 0.656)
   );
+}
+.top {
+  background-color: gray;
+  border-bottom: #1a1a2e;
+  z-index: 20;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
 }

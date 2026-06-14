@@ -16,4 +16,5 @@
 | 11-Jun-2026 | ⭐ 12 | ⚛️ Primeros pasos con React — componentes ChangeSize + setup Tauri |
 | 12-Jun-2026 | ⭐ 13 | 🔧 React + ajustes varios |
 | 13-Jun-2026 | ⭐ 14 | 🎨 **UI del asistente**: Hook `useAssistant` con ciclo demo de estados (wait→hearing→processing→speaking). Componente `StatusIndicator` con círculo tipo JARVIS + ondas expansivas por CSS. Estructura separada: hook (lógica) / componente (vista) / CSS (animaciones). Pendiente: conectar en App.tsx y probar. ✅ |
+| 14-Jun-2026 | ⭐ 15 | 🧠 **OpenCode como cerebro de Yartis**: diagnóstico del AGENTS.md global que preguntaba perfil en cada llamada. Creado perfil `yartis-brain` con skill Yartis dedicada (sin skills de desarrollo). `brain/opencode.py` usa `--continue` para mantener sesión limpia. Bugfix: `ejecutar(texto)` ya no ignora el texto (no regraba si recibe parámetro). Script `test_mano.py` con TTS para pruebas rápidas. ✅ |
 

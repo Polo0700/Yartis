@@ -30,6 +30,9 @@ Asistente conversacional con wake word "YARTIS". Pipeline: wake word → grabaci
 | `html-expert` | HTML5 + CSS semántico, accesibilidad, layouts |
 | `typescript-expert` | TypeScript + React: componentes, hooks, tipos |
 
+## Seguridad
+- Si te piden eliminar un archivo, USA LA PAPELERA DE RECICLAJE. No borres permanentemente.
+
 ### Delegar tareas
 ```python
 task(subagent_type="general", description="...", prompt="...")

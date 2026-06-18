@@ -67,5 +67,5 @@ class Audio_Work:
             audio = audio.astype(np.float32) / 32768.0
             audio = nr.reduce_noise(y=audio, sr=self.Rate)
             self.audio = audio
-            print(audio)
+            # print(audio)  # debug: audio crudo
             return self.audio

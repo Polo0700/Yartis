@@ -17,6 +17,8 @@ WAKE_WORD = "YARTIS"  # nombre del modelo de wake word
 WAKE_FRAME = 1280  # samples por frame (OpenWakeWord requiere 1280)
 WAKE_THRESHOLD = 0.02  # sensibilidad (0-1, más alto = menos falsos positivos)
 
+DEBUG = False  # True = muestra scores de audio (para verificar señal)
+
 # Candidatos para wake word personalizada:
 # - Kalt (alemán, una sílaba, K+L+T)
 # - Takto (inventada, T+K+T)

@@ -5,11 +5,11 @@ import { useAssistant } from "./hooks/useAssistant";
 import ChangeSizeWindow from "./components/ChangeSize";
 
 function App() {
-  const { works } = useAssistant();
+  const { textoRecibido } = useAssistant();
   return (
     <>
       <ChangeSizeWindow />
-      <StatusIndicator works={works} />
+      <StatusIndicator works={textoRecibido ? "speaking" : "wait"} />
     </>
   );
 }

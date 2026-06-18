@@ -1,6 +1,17 @@
+import argparse
+import os
 from core.wake import wake
 from brain.opencode import peticion
 import pyttsx3
+import soundfile as sf
+import sounddevice as sd
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--cpu", action="store_true", help="Forzar CPU aunque haya GPU")
+args = parser.parse_args()
+if args.cpu:
+    os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
 
 class yartis:
@@ -20,6 +31,9 @@ class yartis:
             self.wake = wake()
             print("Yartis está escuchando...")
             self.wake.iniciar()
+            data, fs = sf.read("assets/bell_starMod.wav")
+            sd.play(data, fs)
+            sd.wait()
             print("Wake word detectada, procesando petición...")
             print("Yartis escuchando peticion")
             respuesta = self.peticion.ejecutar()
@@ -29,5 +43,10 @@ class yartis:
 
 
 if __name__ == "__main__":
-    app = yartis()
-    app.iniciar()
+    try:
+        app = yartis()
+        app.iniciar()
+    except (KeyboardInterrupt, SystemExit):
+        print("\nYartis cerrado por el usuario")
+    except Exception as e:
+        print(f"\nYartis cerrado: {e}")

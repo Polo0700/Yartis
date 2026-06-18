@@ -28,7 +28,12 @@ class wake:
     def word(self, indata, *args):
         frame = indata[:, 0].copy()
         resultado = self.modelo.predict(frame)
-        print(f"Score: {resultado}")
+        if config.DEBUG:
+            now = time.time()
+            if not hasattr(self, '_last_print') or now - self._last_print >= 1.0:
+                scores = {k: f"{v:.3f}" for k, v in resultado.items()}
+                print(f"📡 Scores: {scores}")
+                self._last_print = now
         if any(
             resultado.get(k, 0) > config.WAKE_THRESHOLD
             for k in resultado
@@ -38,8 +43,15 @@ class wake:
             raise sd.CallbackStop()
 
     def iniciar(self):
-        self.stream.start()
-        while self.stream.active:
-            time.sleep(0.1)
-        self.stream.stop()
-        self.stream.close()
+        try:
+            self.stream.start()
+            while self.stream.active:
+                time.sleep(0.1)
+        except Exception as e:
+            print(f"Stream cerrado: {e}")
+        finally:
+            try:
+                self.stream.stop()
+                self.stream.close()
+            except:
+                pass

@@ -3,12 +3,15 @@ import os
 import subprocess
 from core.transcriber import Transcribir
 from .context import Registro
+from .confirmacion import confirmador
 
 CONFIG_PATH = os.path.expanduser("~/.config/opencode/opencode.jsonc")
 PERFIL_YARTIS = {
     "skills": {
         "paths": [
-            os.path.expanduser("~/.config/opencode/profiles/categories/yartis-brain").replace("/", "\\")
+            os.path.expanduser(
+                "~/.config/opencode/profiles/categories/yartis-brain"
+            ).replace("/", "\\")
         ]
     }
 }
@@ -16,9 +19,9 @@ SISTEMA = """Eres Yartis, asistente de voz amigable. Respuestas cortas.
 
 REGLAS DE SEGURIDAD:
 - Leer archivos -> NO necesita confirmacion, hazlo directo
-- Crear, modificar o eliminar archivos -> responde: CONFIRMAR|tipo|explica que vas a hacer
+- Crear, modificar o eliminar archivos -> responde: 0x0x0Polo0700|tipo|explica que vas a hacer
   Donde tipo = crear, editar o eliminar
-  Ejemplo: CONFIRMAR|crear|Voy a crear un archivo de prueba
+  Ejemplo: 0x0x0Polo0700|crear|Voy a crear un archivo de prueba
 - Para eliminar -> USA LA PAPELERA DE RECICLAJE. No borres permanentemente.
 - Cuando recibas "El usuario aprobo:" + la orden -> ejecutala sin preguntar
 
@@ -29,6 +32,7 @@ class peticion:
     def __init__(self):
         self.texto = ""
         self.historial = Registro()
+        self.confirma = confirmador()
         self.output = ""
         self.primera_vez = True
 
@@ -48,7 +52,9 @@ class peticion:
 
         if self.primera_vez:
             self.primera_vez = False
-            prompt = f"{SISTEMA} Historial: {self.historial.formato()} Usuario:{self.texto}"
+            prompt = (
+                f"{SISTEMA} Historial: {self.historial.formato()} Usuario:{self.texto}"
+            )
             cmd = ["opencode.cmd", "run", prompt]
         else:
             cmd = ["opencode.cmd", "run", "--continue", self.texto]
@@ -61,5 +67,25 @@ class peticion:
             errors="replace",
         )
         self.output = result.stdout
+        if "0x0x0Polo0700" in self.output:
+            seccion = self.output.split("|", 2)
+            respuesta = self.confirma.clasificar(seccion)
+            if respuesta == 0:
+                return
+            if respuesta == 1:
+                cmd = [
+                    "opencode.cmd",
+                    "run",
+                    "--continue",
+                    "usuario aprobo: " + self.texto,
+                ]
+                result = subprocess.run(
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+                self.output = result.stdout
         self.historial.agregar(self.output, self.texto)
         return self.output

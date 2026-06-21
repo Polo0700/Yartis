@@ -22,4 +22,5 @@
 | 18-Jun-2026 | ⭐ 18 | 🛡️ **Sistema de confirmacion**: System prompt con reglas CONFIRMAR|tipo|detalle (CRUD con leer=auto, eliminar=papelera). Esqueleto `brain/confirmacion.py` con clase confirmador. Prueba de apertura de navegador via PowerShell exitosa. ✅ |
 | 18-Jun-2026 | ⭐ 18 | 📋 **Estado del proyecto documentado**: Revisados 8 archivos modificados, 10 problemas activos identificados (wake word, confirmación TF-IDF, GPU, sonidos), y 5 próximos pasos ordenados por prioridad. Racha al día. ✅ |
 | 19-Jun-2026 | ⭐ 19 | 🛡️ **Sistema de confirmación completo**: TF-IDF + Logistic Regression en `brain/confirmacion.py`. Código de seguridad `0x0x0Polo0700`. Flujo: OpenCode responde → confirma con voz → clasifica → reenvía si aprueba. ✅ |
+| 21-Jun-2026 | ⭐ 20 | 🎵 **Sonido de salida + limpieza**: Procesamiento con EQ (bandstop), compresión RMS, reverb convolución, fade. Fix del None en yartis.py. Push a git. Limpieza de archivos base (public/, pruebas). ✅ |
 

@@ -29,3 +29,13 @@ alpha/
 v1_0/
 image.png
 test_mano.py
+
+# Environment
+.env
+
+# Multi-agent state
+.multiagent/
+
+# Test junk
+prueba.txt
+test2.txt

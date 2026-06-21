@@ -3,9 +3,6 @@ import os
 from core.wake import wake
 from brain.opencode import peticion
 import pyttsx3
-import soundfile as sf
-import sounddevice as sd
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--cpu", action="store_true", help="Forzar CPU aunque haya GPU")
@@ -30,13 +27,11 @@ class yartis:
         while True:
             self.wake = wake()
             print("Yartis está escuchando...")
-            self.wake.iniciar()
-            data, fs = sf.read("assets/bell_starMod.wav")
-            sd.play(data, fs)
-            sd.wait()
             print("Wake word detectada, procesando petición...")
             print("Yartis escuchando peticion")
             respuesta = self.peticion.ejecutar()
+            if not respuesta:
+                continue
             print("Yartis para de escuchar peticion")
             print(f"Respuesta de Yartis: {respuesta}")
             self.hablar(respuesta)

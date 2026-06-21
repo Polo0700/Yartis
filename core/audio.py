@@ -3,6 +3,7 @@ import sounddevice as sd
 import numpy as np
 import noisereduce as nr
 from . import config
+import soundfile as sf
 
 
 class Audio_Work:
@@ -29,11 +30,18 @@ class Audio_Work:
             dtype=self.Dtype,
             callback=self.recordSilence,
         )
+
+        data, fs = sf.read("assets/bell_starMod.wav")
+        sd.play(data, fs)
+        sd.wait()
         self.microfono.start()
         print("microfono encendido")
         while self.microfonoACT:
             time.sleep(0.1)
         self.stopMic()
+        song, pr = sf.read("assets/Exit_main_processed.wav")
+        sd.play(song, pr)
+        sd.wait()
         print("microfono apagado")
         return self.audio
 

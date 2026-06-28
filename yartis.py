@@ -23,10 +23,11 @@ class yartis:
         self.tts.runAndWait()
 
     def iniciar(self):
-        self.hablar("Yartis iniciado")
         while True:
             self.wake = wake()
-            print("Yartis está escuchando...")
+            self.hablar("Esperando Wake word")
+            self.wake.iniciar()
+            self.hablar("Yartis está escuchando...")
             print("Wake word detectada, procesando petición...")
             print("Yartis escuchando peticion")
             respuesta = self.peticion.ejecutar()

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 RATE = 16000
 CHUNK = 1024
 CHANNELS = 1
@@ -15,7 +17,8 @@ SEGUNDOS_POST_SILENCIO = 5
 # OpenWakeWord
 WAKE_WORD = "YARTIS"  # nombre del modelo de wake word
 WAKE_FRAME = 1280  # samples por frame (OpenWakeWord requiere 1280)
-WAKE_THRESHOLD = 0.02  # sensibilidad (0-1, más alto = menos falsos positivos)
+WAKE_THRESHOLD = 0.3  # sensibilidad (0-1, más alto = menos falsos positivos)
+WAKE_MODEL_PATH = str(Path(__file__).parent / "models" / "yartis.onnx")
 
 DEBUG = False  # True = muestra scores de audio (para verificar señal)
 

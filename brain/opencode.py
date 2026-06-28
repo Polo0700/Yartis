@@ -4,6 +4,7 @@ import subprocess
 from core.transcriber import Transcribir
 from .context import Registro
 from .confirmacion import confirmador
+import pyttsx3
 
 CONFIG_PATH = os.path.expanduser("~/.config/opencode/opencode.jsonc")
 PERFIL_YARTIS = {
@@ -35,6 +36,10 @@ class peticion:
         self.confirma = confirmador()
         self.output = ""
         self.primera_vez = True
+        self.division = ""
+        self.res = ""
+        self.lec = pyttsx3.init()
+        self.tts = Transcribir()
 
         with open(CONFIG_PATH, "r", encoding="utf-8") as f:
             config = json.load(f)
@@ -48,8 +53,9 @@ class peticion:
         if texto:
             self.texto = texto
         else:
-            self.texto = Transcribir().transcripcion()
-
+            self.texto = self.tts.transcripcion()
+        if not self.texto:
+            return
         if self.primera_vez:
             self.primera_vez = False
             prompt = (
@@ -71,7 +77,7 @@ class peticion:
             seccion = self.output.split("|", 2)
             respuesta = self.confirma.clasificar(seccion)
             if respuesta == 0:
-                return
+                return None
             if respuesta == 1:
                 cmd = [
                     "opencode.cmd",
@@ -87,5 +93,33 @@ class peticion:
                     errors="replace",
                 )
                 self.output = result.stdout
+        if "1x1x1Polo0700" in self.output:
+            preguntas = []
+            result = self.output.split("|")
+            a = int(result[-1])
+            while a != len(preguntas):
+                resultres = self.output.split("|")
+                resultres.pop(-1)
+                resultres.pop(0)
+                for pregunta in resultres:
+                    self.lec.say(pregunta)
+                    dato = self.tts.transcripcion()
+                    if not dato:
+                        continue
+                    preguntas.append(dato)
+            cmd = [
+                "opencode.cmd",
+                "run",
+                "--continue",
+                "Respuestas del usuario: " + str(preguntas),
+            ]
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            preguntas = []
         self.historial.agregar(self.output, self.texto)
         return self.output

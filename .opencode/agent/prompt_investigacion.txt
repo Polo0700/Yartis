@@ -1,0 +1,38 @@
+Crea un documento tecnico markdown en D:\Users\Usuario1\Downloads\Yardis\ideas_privadas\limpieza_audio_sintetico.md
+
+El documento debe explicar TECNICAMENTE (con formulas, conceptos de procesamiento de senales, etc.) las siguientes tecnicas de limpieza de audio sintetico (como el generado por OpenUtau / sintetizadores de voz). Asume que el lector sabe programacion pero no necesariamente procesamiento de audio. Usa un tono caveman (directo, sin rodeos). El archivo DEBE guardarse en: D:\Users\Usuario1\Downloads\Yardis\ideas_privadas\limpieza_audio_sintetico.md
+
+## Contenido requerido:
+
+### 1. EQ (Ecualizacion) - Reduccion de la zona 2-5kHz
+- Por que el rango 2-5kHz suena "robotico" (sensibilidad del oido humano, curvas Fletcher-Munson)
+- Filtros: Butterworth bandstop vs shelving vs notch
+- Implementacion con scipy.signal.butter y sosfilt
+- Frecuencia de corte, orden del filtro, ripple
+- Ejemplo de codigo Python con butter(4, [2000, 5000], btype='bandstop')
+
+### 2. Compresion RMS
+- Diferencia entre pico y RMS
+- Ventana de analisis (por que 10ms es un buen default)
+- Knee, ratio, attack, release (conceptos clasicos de compresor)
+- Implementacion simplificada con librosa.feature.rms + interpolacion
+- Formula: gain = target_rms / max(rms, epsilon)
+
+### 3. Reverb por convolucion
+- Que es una respuesta al impulso (IR)
+- Convolucion: (f * g)[n] = sum f[k] * g[n-k]
+- Por que una IR de ruido blanco con decaimiento exponencial simula una sala
+- Formula del decaimiento: e^(-t * decay_rate)
+- Mezcla wet/dry (senal procesada vs original)
+- Implementacion con scipy.signal.convolve
+
+### 4. Fade out
+- Ventana lineal vs coseno (curva suave)
+- Por que 50ms es suficiente para evitar pops/clicks
+- Implementacion con np.linspace
+
+### 5. Normalizacion
+- Pico vs LUFS vs RMS
+- Por que normalizar a 0.95 y no a 1.0 (headroom, evitar clipping intersample)
+
+Incluye referencias a libros como 'DAFX: Digital Audio Effects' o 'Understanding Audio' si aplica. Al final, agrega una seccion de 'Referencias' con enlaces a documentacion de scipy.signal, librosa, etc.

@@ -39,3 +39,9 @@ test_mano.py
 # Test junk
 prueba.txt
 test2.txt
+
+# Archive (viejos, backups, etc)
+_archive/
+
+# Voz grabada (biométrico)
+Yartis.wav

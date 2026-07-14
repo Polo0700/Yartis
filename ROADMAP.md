@@ -11,7 +11,8 @@
 | **V1** | ✅ Completado | Pipeline básico: wake word → grabación → Whisper → OpenCode → TTS |
 | **V2** | 🔄 En progreso | WebSocket Hub + Clasificador local + Servicios (Música, Correo, Calendario, Telegram, Navegador) |
 | **V3** | ⏳ Pendiente | **MODO JARVIS** — Escucha ambiental continua + Detección de intención pasiva + Sesiones persistentes |
-| **V4** | ⏳ Pendiente | Autoaprendizaje + Explicador de código |
+| **V3.5** | ⏳ Pendiente | **OPTIMIZACIÓN** — Modelos quantizados, lazy loading, Rust en hot path, cache inteligente |
+| **V4** | ⏳ Pendiente | Skills generales — Web, pantalla, acciones |
 | **V5** | ⏳ Pendiente | Excalidraw interactivo + Búsqueda de videos + Generador de sitios |
 | **V6** | ⏳ Pendiente | Motor de renderizado de video on-demand |
 | **V7** | ⏳ Pendiente | Plataforma de Notas Interactiva (competencia NotebookLM) |
@@ -370,6 +371,114 @@ La wake word "YARTIS" **no desaparece** — se convierte en una de varias formas
 
 ---
 
+## V3.5 — Optimización de Recursos
+
+**Objetivo:** Después de implementar JARVIS (V3), optimizar para bajo consumo de CPU/GPU/RAM. Primero hace que funcione, luego lo haces eficiente.
+
+### El problema
+
+```
+SIN OPTIMIZAR (V3 crudo):
+
+🎤 Escucha continua (Silero VAD)    → ~50MB RAM, ~2% CPU
+🧠 Voice ID por chunk               → ~200MB RAM, ~5% CPU
+🗣️ Whisper (transcripción)          → ~1GB RAM, ~15% GPU
+💬 Modelo local (análisis)          → ~2GB RAM, ~20% GPU
+🔊 Piper TTS                        → ~100MB RAM, ~3% CPU
+📡 BLE coordinación                 → ~10MB RAM, ~1% CPU
+                                  ─────────────────────────
+                                  TOTAL: ~3.5GB RAM, ~46% CPU/GPU
+```
+
+### Soluciones
+
+#### 1. Modelos Quantizados (menos recursos)
+
+```
+MODELO NORMAL:        MODELO QUANTIZADO:
+Whisper small: 1GB   → Whisper tiny Q4: ~200MB
+LLM 7B: 4GB          → LLM 7B Q4: ~2GB
+Voice ID: 200MB      → Voice ID Q8: ~100MB
+
+AHORRO: ~60% menos RAM
+```
+
+#### 2. Carga Lazy (solo cuando se necesita)
+
+```
+SIN lazy load:
+  Al iniciar → carga TODO → 3.5GB RAM desde el inicio
+
+CON lazy load:
+  Al iniciar → carga solo VAD + Voice ID → ~250MB
+  Cuando dice "YARTIS" → carga Whisper → +200MB
+  Cuando necesita analyzer → carga LLM → +2GB
+  Cuando termina → descarga LLM → -2GB
+```
+
+#### 3. Priorización de recursos
+
+```
+FOREGROUND (responde ahora):
+  → CPU/GPU al máximo
+  → Todos los modelos cargados
+
+BACKGROUND (procesando en paralelo):
+  → CPU/GPU limitado
+  → Modelos en modo ahorro
+
+DORMIDO (escuchando nada más):
+  → Solo VAD activo
+  → Todo lo demás descargado
+```
+
+#### 4. Rust en el hot path
+
+```
+PYTHON (lento):          RUST (rápido):
+  Voice ID                 → Voice ID
+  Buffer management        → Buffer management
+  Audio filtering          → Audio filtering
+  Chunk processing         → Chunk processing
+
+→ El camino caliente (lo que corre 24/7) está en Rust
+→ Python solo procesa cuando hay algo que hacer
+```
+
+#### 5. Cache inteligente
+
+```
+SIN cache:
+  Cada pregunta → Whisper → LLM → respuesta
+
+CON cache:
+  Pregunta similar → cache → respuesta instantánea
+  "¿Qué hora es?" pregunta 50 veces → 1 transcripción guardada
+```
+
+### Resultado optimizado
+
+```
+DORMIDO:      ~100MB RAM, ~1% CPU   (solo VAD)
+ESCUCHANDO:   ~300MB RAM, ~5% CPU   (VAD + Voice ID)
+PROCESANDO:   ~2GB RAM, ~40% GPU    (Whisper + LLM)
+RESPONDIENDO: ~300MB RAM, ~5% CPU   (solo TTS)
+```
+
+**De 3.5GB a 100MB en modo dormido** — Yartis usable en cualquier compu.
+
+### Métricas objetivo
+
+| Métrica | Sin optimizar | Optimizado | Objetivo |
+|---------|---------------|------------|----------|
+| RAM dormido | 3.5GB | 100MB | < 150MB |
+| CPU dormido | 46% | 1% | < 5% |
+| RAM procesando | 3.5GB | 2GB | < 2.5GB |
+| Tiempo de respuesta | ~3s | ~1.5s | < 2s |
+| Batería (laptop) | ~3h | ~8h | > 6h |
+
+---
+
 ## V4 — Skills Generales: Web, Pantalla, Acciones
 
 **Objetivo:** Yartis puede hacer cosas en internet y en la computadora del usuario. Navegar webs, leer pantallas, abrir apps, buscar información, ejecutar tareas complejas.
@@ -499,7 +608,8 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 |---------|----------------|
 | V2 | Python + WebSocket + sentence-transformers + yt-dlp |
 | V3 | V2 + Silero VAD + keyword spotting + session manager |
-| V4 | V3 + agent-reach + Playwright/Selenium + screen capture |
+| V3.5 | V3 + quantización ONNX + lazy loading + Rust hot path + cache |
+| V4 | V3.5 + agent-reach + Playwright/Selenium + screen capture |
 | V5 | V4 + Excalidraw API + React + sandbox + LLM local |
 | V6 | V5 + FFmpeg + renderizado PNG + sincronización audio/video |
 | V7 | V6 + SQLite/localDB + búsqueda semántica + spaced repetition |
@@ -510,10 +620,10 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 ## 📊 Resumen Visual
 
 ```
-V1 ✅ → V2 🔄 → V3 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳ → V8/1.0 ⏳
-Pipeline    Servicios  JARVIS     Skills      Educación    Renderizado  Plataforma  RELEASE
-básico      + clasif.  Escucha    generales   + matemáticas de video     de notas    FINAL
-                       Continua   (web/screen) Excalidraw  on-demand
+V1 ✅ → V2 🔄 → V3 ⏳ → V3.5 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳ → V8/1.0 ⏳
+Pipeline    Servicios  JARVIS     Optimizar  Skills      Educación    Renderizado  Plataforma  RELEASE
+básico      + clasif.  Escucha    CPU/GPU/   generales   + matemáticas de video     de notas    FINAL
+                       Continua   RAM                    Excalidraw  on-demand
 ```
 
 ---

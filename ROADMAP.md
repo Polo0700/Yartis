@@ -10,7 +10,7 @@
 |---------|--------|-------------|
 | **V1** | ✅ Completado | Pipeline básico: wake word → grabación → Whisper → OpenCode → TTS |
 | **V2** | 🔄 En progreso | WebSocket Hub + Clasificador local + Servicios (Música, Correo, Calendario, Telegram, Navegador) |
-| **V3** | ⏳ Pendiente | Servicios completos + estabilidad |
+| **V3** | ⏳ Pendiente | **MODO JARVIS** — Escucha ambiental continua + Detección de intención pasiva + Sesiones persistentes |
 | **V4** | ⏳ Pendiente | Autoaprendizaje + Explicador de código |
 | **V5** | ⏳ Pendiente | Excalidraw interactivo + Búsqueda de videos + Generador de sitios |
 | **V6** | ⏳ Pendiente | Motor de renderizado de video on-demand |
@@ -39,17 +39,138 @@
 
 ---
 
-## V3 — Estabilidad + Servicios Completos
+## V3 — MODO JARVIS: Escucha Ambiental Continua
 
-**Objetivo:** Todos los servicios funcionando de forma confiable. Preparar la base para autoaprendizaje.
+**Objetivo:** Invertir el flujo. Yartis no espera a que le hablen — **escucha siempre, detecta intención, y habla cuando vale la pena**. El salto de asistente reactivo a compañero proactivo.
+
+```
+ESTADO ACTUAL (V2):
+  🎤 Off  →  "YARTIS"  →  🎤 On  →  Procesa  →  Responde
+                     ↑ wake word obligatoria
+
+MODO JARVIS (V3):
+  🎤 Siempre escuchando (modelo ligero, quantizado, ~50MB)
+     │
+     ├─ Ruido ambiental → ignora → sigue dormido 🟢
+     │
+     ├─ "hola" → detecta saludo → responde自然mente 🔵
+     │
+     ├─ "chatarra" (palabra clave de usuario) → sesión abierta 🔴
+     │    → micrófono queda prendido
+     │    → usuario habla libremente
+     │    → al finalizar: limpieza de ruido → procesa → responde
+     │
+     └─ silencio largo → vuelve a dormir 🟢
+```
+
+### Arquitectura del modo JARVIS
+
+```
+┌─────────────────────────────────────────────────┐
+│                 AUDIO CRUDO (micrófono)          │
+│              24/7 • bajo consumo CPU              │
+└──────────────────────┬──────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────┐
+│        MODELO LIGERO DE DETECCIÓN (~50MB)        │
+│  • Silero VAD (detecta voz humana)               │
+│  • Keyword spotting (detecta palabras clave)     │
+│  • Clasificador de intención (saludo/petición)   │
+└───────┬──────────────────┬──────────────────────┘
+        │                  │
+   No detecta         Detecta algo
+        │                  │
+        ▼                  ▼
+   🟢 Dormido        🟡 Evaluando
+   (sigue el loop)        │
+                          ▼
+                   ┌──────────────┐
+                   │ ¿Qué detectó?│
+                   └──────┬───────┘
+                          │
+            ┌─────────────┼─────────────┐
+            ▼             ▼             ▼
+       Saludo         Petición     "chatarra"
+       ("hola")    ("qué tiempo")  (palabra clave)
+            │             │             │
+            ▼             ▼             ▼
+       Responde      Procesa       🔴 SESIÓN ABIERTA
+       natural       como V2       • Graba todo
+                                   • Espera silencio
+                                   • Limpia audio
+                                   • Procesa batch
+                                   • Responde
+```
+
+### Estados del agente
+
+| Estado | Icono | Qué hace |
+|--------|-------|----------|
+| **Durmiendo** | 🟢 | Modelo ligero escuchando, descarta ruido |
+| **Evaluando** | 🟡 | Detectó algo, evalúa si es relevante |
+| **Hablando** | 🔴 | Procesando y respondiendo al usuario |
+| **Sesión abierta** | 🟣 | Palabra clave activa, grabando todo |
+| **Callado** | ⚪ | Aprendió que no debe hablar aquí |
+
+### Componentes nuevos para V3
+
+| Componente | Descripción | Dependencias |
+|------------|-------------|--------------|
+| `core/ambient_listener.py` | Loop de escucha continua con modelo ligero | Silero VAD, sounddevice |
+| `core/keyword_spotter.py` | Detección de palabras clave en stream | Silero VAD + modelo custom |
+| `core/intent_classifier.py` | Clasificador de intención (saludo/petición/ignorar) | Modelo quantizado ONNX |
+| `core/session_manager.py` | Manejo de sesiones abiertas (grabar → limpiar → procesar) | audio.py existente |
+| `core/voice_isolator.py` | Aislamiento de voz del usuario (limpiar ruido de fondo) | noisereduce existente |
+
+### Configuración del usuario
+
+```json
+{
+  "modo_jarvis": {
+    "enabled": true,
+    "palabra_clave": "chatarra",
+    "umbral_confianza": 0.7,
+    "max_sesion_segundos": 30,
+    "saludos_automaticos": true,
+    "horario_activo": "08:00-23:00",
+    "no_molestar": ["reuniones", "gaming"]
+  }
+}
+```
+
+### Reglas de No-Molestar (JARVIS)
+
+| Regla | Explicación |
+|-------|-------------|
+| **No interrumpas en flow** | Si el usuario está hablando seguido, espera pausa |
+| **Mensajes < 15 palabras** | Proactivo no significa charlatán |
+| **Máximo 1 interrupción cada 10 min** | Spam mata la utilidad |
+| **Prioridad** | Emergencia > Petición > Saludo > Trivial |
+| **Horario** | No hablar fuera del horario configurado |
+| **Aprendizaje** | No repetir cosas que el usuario ya sabe |
+
+### Lo que cambia en el pipeline actual
+
+```
+ANTES:  wake("YARTIS") → graba(3s) → transcribe → responde
+AHORA:  ambient(modelo ligero) → detecta(intención) → responde O sesión
+```
+
+La wake word "YARTIS" **no desaparece** — se convierte en una de varias formas de activar. Pero ahora también puedes:
+- Decir "hola" y que te responda sin wake word
+- Usar tu palabra clave para sesiones largas
+- Simplemente hablar y que él detecte si te refieres a él
+
+### Fase 2: Servicios + Estabilidad (paralelo a JARVIS)
 
 | Paso | Estado | Detalle |
 |------|--------|---------|
 | Servicios V2 completados y estables | ⏳ | Todos los servicios del V2 funcionando y probados |
-| Sistema de logs y recuperación de errores | ⏳ | Logs por servicio, retry automático, notificación al usuario cuando algo falla |
-| Configuración persistente | ⏳ | Preferencias del usuario guardadas (voz, servicios favoritos, historial) |
+| Sistema de logs y recuperación de errores | ⏳ | Logs por servicio, retry automático |
+| Configuración persistente | ⏳ | Preferencias del usuario guardadas |
 | Tests automatizados | ⏳ | Cobertura mínima de los servicios core |
-| Preparar infraestructura para V4 | ⏳ | Módulo de búsqueda web, sandbox para scripts, sistema de caché de scripts |
+| Preparar infraestructura para V4 | ⏳ | Módulo de búsqueda web, sandbox para scripts |
 
 ---
 
@@ -215,9 +336,9 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 
 ```
 V1 ✅ → V2 🔄 → V3 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳
-Pipeline    Servicios  Estabilidad Auto-       Excalidraw  Renderizado  Plataforma
-básico      + clasif.  + tests    aprendizaje  + videos    de video     de notas
-                                   + explicador  + sitios    on-demand
+Pipeline    Servicios  JARVIS     Auto-       Excalidraw  Renderizado  Plataforma
+básico      + clasif.  Escucha    aprendizaje  + videos    de video     de notas
+                       Continua   + explicador  + sitios    on-demand
 ```
 
 ---

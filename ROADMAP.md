@@ -15,6 +15,7 @@
 | **V5** | ⏳ Pendiente | Excalidraw interactivo + Búsqueda de videos + Generador de sitios |
 | **V6** | ⏳ Pendiente | Motor de renderizado de video on-demand |
 | **V7** | ⏳ Pendiente | Plataforma de Notas Interactiva (competencia NotebookLM) |
+| **V8/1.0** | ⏳ Pendiente | **RELEASE FINAL** — Pulido, testeo completo, listo para el mundo |
 
 ---
 
@@ -174,39 +175,17 @@ La wake word "YARTIS" **no desaparece** — se convierte en una de varias formas
 
 ---
 
-## V4 — Autoaprendizaje + Explicador de Código
+## V4 — Skills Generales: Web, Pantalla, Acciones
 
-**Objetivo:** Yartis detecta cuándo no sabe algo, busca la respuesta, genera un script, lo valida, lo guarda permanentemente, y luego lo explica al estudiante con voz.
-
-### 4.1 Detección de Vacíos de Conocimiento
-
-```
-Usuario pregunta algo → Clasificador detecta que NO hay servicio preprogramado
-→ Se activa el módulo de autoaprendizaje
-```
+**Objetivo:** Yartis puede hacer cosas en internet y en la computadora del usuario. Navegar webs, leer pantallas, abrir apps, buscar información, ejecutar tareas complejas.
 
 | Paso | Estado | Detalle |
 |------|--------|---------|
-| Detectar "no sé" / vacío de conocimiento | ⏳ | Cuando el usuario pregunta un teorema, fórmula o problema que no está en los scripts locales |
-| Buscar base teórica en internet | ⏳ | Usar agent-reach o web search para encontrar la teoría detrás del problema |
-| Generar script Python en tiempo real | ⏳ | LLM genera un script que resuelve el problema específico |
-| Validación en sandbox | ⏳ | Ejecutar el script en sandbox aislado, comparar resultados con ejercicios resueltos de fuentes confiables |
-| Guardado permanente | ⏳ | Si la validación es exitosa, guardar el script en módulos locales para reutilización futura |
-| Cache de scripts aprendidos | ⏳ | Indexar scripts por tema/palabras clave para búsqueda rápida |
-
-### 4.2 Explicador de Código con IA Local
-
-```
-Script generado → LLM local lee el código paso a paso
-→ Genera explicación conceptual → TTS la pronounce
-```
-
-| Paso | Estado | Detalle |
-|------|--------|---------|
-| Lector de código paso a paso | ⏳ | LLM local lee cada línea del script validado |
-| Generador de explicaciones conceptuales | ⏳ | Traduce la lógica de variables a lenguaje humano: "Esta variable guarda la velocidad, y aquí la multiplicamos por el tiempo para obtener la distancia" |
-| Integración con pipeline TTS | ⏳ | La explicación se envía por el pipeline de texto a voz de Yartis |
-| Modo interactivo | ⏳ | El estudiante puede cambiar valores en la explicación y ver cómo cambia el resultado |
+| Navegador web integrado | ⏳ | Abrir páginas, buscar, leer contenido, hacer resúmenes |
+| Lectura de pantalla | ⏳ | Capturar lo que el usuario ve y entenderlo |
+| Ejecución de tareas | ⏳ | Abrir apps, mover archivos, configurar cosas |
+| Integración con servicios web | ⏳ | Gmail, Calendar, YouTube, redes sociales |
+| Ejecución autónoma | ⏳ | "Oye, busca los mejores restaurantes cerca y dame opciones" |
 
 ---
 
@@ -324,22 +303,38 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 | Versión | Stack Principal |
 |---------|----------------|
 | V2 | Python + WebSocket + sentence-transformers + yt-dlp |
-| V3 | V2 + logs + tests + config persistente |
-| V4 | V3 + agent-reach (búsqueda) + sandbox + LLM local (Ollama/Mistral) |
-| V5 | V4 + Excalidraw API + React + yt-dlp (videos) + generador HTML |
+| V3 | V2 + Silero VAD + keyword spotting + session manager |
+| V4 | V3 + agent-reach + Playwright/Selenium + screen capture |
+| V5 | V4 + Excalidraw API + React + sandbox + LLM local |
 | V6 | V5 + FFmpeg + renderizado PNG + sincronización audio/video |
-| V7 | V6 + React (UI completa) + SQLite/localDB + búsqueda semántica |
+| V7 | V6 + SQLite/localDB + búsqueda semántica + spaced repetition |
+| V8/1.0 | V7 + pulido final + testeo completo + docs + release |
 
 ---
 
 ## 📊 Resumen Visual
 
 ```
-V1 ✅ → V2 🔄 → V3 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳
-Pipeline    Servicios  JARVIS     Auto-       Excalidraw  Renderizado  Plataforma
-básico      + clasif.  Escucha    aprendizaje  + videos    de video     de notas
-                       Continua   + explicador  + sitios    on-demand
+V1 ✅ → V2 🔄 → V3 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳ → V8/1.0 ⏳
+Pipeline    Servicios  JARVIS     Skills      Educación    Renderizado  Plataforma  RELEASE
+básico      + clasif.  Escucha    generales   + matemáticas de video     de notas    FINAL
+                       Continua   (web/screen) Excalidraw  on-demand
 ```
+
+---
+
+## V8/1.0 — RELEASE FINAL
+
+**Objetivo:** Pulir todo, testear todo, documentar todo. Yartis listo para el mundo.
+
+| Paso | Estado | Detalle |
+|------|--------|---------|
+| Testeo completo de todas las versiones | ⏳ | Cada feature probada de extremo a extremo |
+| Rendimiento optimizado | ⏳ | CPU, RAM, latencia en todos los modos |
+| Documentación de usuario | ⏳ |guía de instalación, configuración, uso |
+| Instalador multiplataforma | ⏳ | Windows, Linux, macOS (si es posible) |
+| Feedback de usuarios reales | ⏳ | Beta testing con usuarios externos |
+| Bugs finales | ⏳ | Los últimos ajustes antes del release |
 
 ---
 
@@ -365,4 +360,4 @@ básico      + clasif.  Escucha    aprendizaje  + videos    de video     de nota
 ---
 
 *Última actualización: 14-Jul-2026*
-*Creado por: Gemini (recopilación) + OpenCode (estructura)*
+*Creado por: Gemini (recopilación) + OpenCode (estructura) + Usuario (visión JARVIS)*

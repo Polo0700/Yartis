@@ -23,4 +23,6 @@
 | 18-Jun-2026 | ⭐ 18 | 📋 **Estado del proyecto documentado**: Revisados 8 archivos modificados, 10 problemas activos identificados (wake word, confirmación TF-IDF, GPU, sonidos), y 5 próximos pasos ordenados por prioridad. Racha al día. ✅ |
 | 19-Jun-2026 | ⭐ 19 | 🛡️ **Sistema de confirmación completo**: TF-IDF + Logistic Regression en `brain/confirmacion.py`. Código de seguridad `0x0x0Polo0700`. Flujo: OpenCode responde → confirma con voz → clasifica → reenvía si aprueba. ✅ |
 | 21-Jun-2026 | ⭐ 20 | 🎵 **Sonido de salida + limpieza**: Procesamiento con EQ (bandstop), compresión RMS, reverb convolución, fade. Fix del None en yartis.py. Push a git. Limpieza de archivos base (public/, pruebas). ✅ |
+| 28-Jun-2026 | ⭐ 21 | 🧠 **OpenCode obedece al fin**: SISTEMA sin personalidad en una linea, AGENTS.md sin prompt de perfiles, separador `---` en el prompt. Responde `0x0x0Polo0700` correctamente. ✅ |
+| 14-Jul-2026 | ⭐ 22 | 🗺️ **Roadmap V4-V7 documentado**: Visión completa de autoaprendizaje, Excalidraw interactivo, renderizado de video on-demand, y plataforma de notas. Archivo `ROADMAP.md` creado. ✅ |
 

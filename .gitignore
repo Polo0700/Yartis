@@ -45,3 +45,4 @@ _archive/
 
 # Voz grabada (biométrico)
 Yartis.wav
+assets/*.wav

@@ -202,6 +202,75 @@ ESCENARIO 3: Solo mamá (tú no estás)
 
 **Regla de oro:** Si el DUEÑO está hablando → solo importa él. Los externos se procesan SOLO cuando el dueño no está hablando o cuando hablan DIRECTAMENTE a él.
 
+### Coordinación entre dispositivos Yartis (BLE + Bluetooth)
+
+**Problema:** Si hay 2+ Yartis en la misma habitación, ambas se activan cuando alguien dice "YARTIS".
+
+**Solución:** Coordinación por Bluetooth Low Energy (BLE) — sempre activo, casi 0 batería.
+
+```
+TRES CAPAS DE COORDINACIÓN:
+
+CAPA 1: BLE (siempre activo, ~0 batería)
+  ├─ Descubre otras Yartis en la red local
+  ├─ Intercambia IDs de dispositivos
+  ├─ "¿Quién es el dueño de esta voz?"
+  └─ Decide quién responde
+
+CAPA 2: BLUETOOTH NORMAL (si BLE detecta otra Yartis)
+  ├─ Conexión estable para coordinación pesada
+  ├─ Estado compartido (quién habló, qué pidió)
+  └─ Se apaga cuando termina la interacción
+
+CAPA 3: AUDIO-BASED (fallback final, sin red)
+  ├─ "Si escucho a OTRA Yartis hablando → me callo"
+  └─ Coordinación por oído puro
+```
+
+**BLE es la pieza clave:**
+- Siempre escuchando pero dormido (consumo ~0.01mW)
+- Se despierta SOLO cuando detecta "YARTIS"
+- Coordina con otras Yartis en la red
+- Vuelve a dormir después
+
+**Reglas de coordinación:**
+```
+¿Los dueños están en la misma red y se tienen registrados?
+  │
+  ├─ SÍ → Coordinar por BLE/BT
+  │       "Hola, yo tengo a tu hermana registrada"
+  │       → Se ponen de acuerdo quién responde
+  │
+  └─ NO → Ignorarse mutuamente
+          "No conozco a ese usuario"
+          → Cada Yartis solo responde a su dueño
+```
+
+**Crates Rust para BLE:**
+| Crate | SO | Notas |
+|-------|-----|-------|
+| `btleplug` | Cross-platform | Recomendado — funciona en Windows, Linux, macOS |
+| `bluer` | Linux | BlueZ bindings |
+| `windows-rs` | Windows | WinRT API |
+
+**Escenarios resueltos:**
+```
+CASO 1: Familia (misma casa)
+  TU PC ──────── Yartis #1 (tú eres dueño)
+  HERMANA PC ─── Yartis #2 (ella es dueña)
+  HERMANA: "Yartis, ¿qué hora es?"
+  → BLE coordina → Solo HERMANA PC responde
+
+CASO 2: Amigos (misma habitación, sin registrarse)
+  TU PC ──────── Yartis #1 (tú eres dueño)
+  AMIGO PC ───── Yartis #2 (él es dueño)
+  AMIGO: "Yartis, ¿qué hora es?"
+  → No se tienen registrados → Se ignoran → Solo AMIGO PC responde
+
+CASO 3: Sin WiFi ni Bluetooth
+  → Fallback audio: "Si escucho al otro hablando, me callo"
+```
+
 ---
 
 ### Arquitectura Técnica del Modo JARVIS
@@ -434,7 +503,7 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 | V5 | V4 + Excalidraw API + React + sandbox + LLM local |
 | V6 | V5 + FFmpeg + renderizado PNG + sincronización audio/video |
 | V7 | V6 + SQLite/localDB + búsqueda semántica + spaced repetition |
-| V8/1.0 | V7 + pulido final + testeo completo + docs + release |
+| V8/1.0 | V7 + btleplug (BLE) + coordinación multi-dispositivo + sesiones paralelas |
 
 ---
 
@@ -451,16 +520,19 @@ básico      + clasif.  Escucha    generales   + matemáticas de video     de no
 
 ## V8/1.0 — RELEASE FINAL
 
-**Objetivo:** Pulir todo, testear todo, documentar todo. Yartis listo para el mundo.
+**Objetivo:** Pulir todo, testear todo, documentar todo. Yartis listo para el mundo. Incluye coordinación multi-dispositivo con BLE.
 
 | Paso | Estado | Detalle |
 |------|--------|---------|
 | Testeo completo de todas las versiones | ⏳ | Cada feature probada de extremo a extremo |
 | Rendimiento optimizado | ⏳ | CPU, RAM, latencia en todos los modos |
-| Documentación de usuario | ⏳ |guía de instalación, configuración, uso |
-| Instalador multiplataforma | ⏳ | Windows, Linux, macOS (si es posible) |
+| Documentación de usuario | ⏳ | Guía de instalación, configuración, uso |
+| Instalador multiplataforma | ⏳ | Windows, Linux, macOS |
 | Feedback de usuarios reales | ⏳ | Beta testing con usuarios externos |
 | Bugs finales | ⏳ | Los últimos ajustes antes del release |
+| **Coordinación multi-dispositivo (BLE)** | ⏳ | Descubrimiento de Yartis en la red, coordinación por Bluetooth Low Energy, priorización de dispositivos |
+| **Sesiones paralelas** | ⏳ | Múltiples usuarios pidiendo cosas al mismo tiempo, scheduling por prioridad + tiempo estimado |
+| **Fallback sin red** | ⏳ | Coordinación por audio ("si escucho al otro hablando, me callo") |
 
 ---
 

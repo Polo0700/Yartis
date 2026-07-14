@@ -44,27 +44,167 @@
 
 **Objetivo:** Invertir el flujo. Yartis no espera a que le hablen — **escucha siempre, detecta intención, y habla cuando vale la pena**. El salto de asistente reactivo a compañero proactivo.
 
-```
-ESTADO ACTUAL (V2):
-  🎤 Off  →  "YARTIS"  →  🎤 On  →  Procesa  →  Responde
-                     ↑ wake word obligatoria
+### Los 5 Niveles de JARVIS
 
-MODO JARVIS (V3):
-  🎤 Siempre escuchando (modelo ligero, quantizado, ~50MB)
-     │
-     ├─ Ruido ambiental → ignora → sigue dormido 🟢
-     │
-     ├─ "hola" → detecta saludo → responde自然mente 🔵
-     │
-     ├─ "chatarra" (palabra clave de usuario) → sesión abierta 🔴
-     │    → micrófono queda prendido
-     │    → usuario habla libremente
-     │    → al finalizar: limpieza de ruido → procesa → responde
-     │
-     └─ silencio largo → vuelve a dormir 🟢
+```
+NIVEL 1: Wake word clásica (V2)
+  → "YARTIS" → graba → responde
+
+NIVEL 2: Escucha continua + detección de intención (V3)
+  → Modelo ligero 24/7 → detecta "YARTIS" en cualquier parte de la frase
+
+NIVEL 3: Voice ID + Buffer inteligente (V3)
+  → Sabe QUIÉN habla → guarda chunks del dueño → contexto completo
+
+NIVEL 4: Voces frecuentes (V8)
+  → Aprende voces nuevas automáticamente → recomienda agregar
+
+NIVEL 5: Contexto + prioridad dinámica (1.0)
+  → Entiende la DINÁMICA de la conversación → prioriza por contexto
 ```
 
-### Arquitectura del modo JARVIS
+### Nivel 1 — Wake Word Clásica (V2)
+
+```
+🎤 Off  →  "YARTIS"  →  🎤 On  →  Procesa  →  Responde
+                   ↑ wake word obligatoria
+```
+
+**Ya implementado.** Simple, bajo consumo, privacidad total.
+
+---
+
+### Nivel 2 — Escucha Continua + Detección de Intención (V3)
+
+```
+🎤 Siempre escuchando (modelo ligero, quantizado, ~50MB)
+   │
+   ├─ Ruido ambiental → ignora → sigue dormido 🟢
+   │
+   ├─ "hola" → detecta saludo → responde naturalmente 🔵
+   │
+   ├─ "chatarra" (palabra clave de usuario) → sesión abierta 🔴
+   │    → micrófono queda prendido
+   │    → usuario habla libremente
+   │    → al finalizar: limpieza de ruido → procesa → responde
+   │
+   └─ silencio largo → vuelve a dormir 🟢
+```
+
+**Opcional** — el usuario elige si activar este modo o quedarse con la wake word clásica.
+
+---
+
+### Nivel 3 — Voice ID + Buffer Inteligente (V3)
+
+```
+🎤 Audio 24/7
+   │
+   ▼
+🦀 RUST (filtrado rápido en tiempo real)
+   ├─ Voice ID: ¿Es el DUEÑO? → 🟢 Guarda chunks
+   ├─ Voice ID: ¿Es OTRO? → ⚪ Ignora
+   │
+   ▼
+BUFFER INTELIGENTE:
+   ├─ Empezás a hablar → chunks se acumulan en temp
+   ├─ Decís "YARTIS" → 🟡 buffer se CONGELA (no se libera)
+   ├─ Seguís hablando → chunks siguen entrando al buffer
+   └─ Dejás de hablar → 🔴 PROCESA TODO el buffer
+   │
+   ▼
+🐍 PYTHON
+   ├─ Whisper transcribe el audio completo (chunks unidos)
+   ├─ Modelo local lee TODO el contexto
+   ├─ Entiende: "estaba explicando X, yartis me preguntó Y"
+   ├─ Genera prompt limpio → OpenCode
+   └─ OpenCode responde → Piper TTS habla
+```
+
+**Flujo completo:**
+```
+Tú:        "oye la integral de x² es x³/3, ¿no?"  ← chunks guardados
+Amigo:     "no creo, revisalo"                      ← ignorado (no es dueño)
+Tú:        "Yartis, ¿cuánto es la integral de x²?" ← detecta nombre → congela
+Tú:        "¿verdad que es así?"                    ← agrega al buffer
+Silencio   → procesa TODO                            ← transcribe + modelo + OpenCode
+Yartis:    "La integral de x² es x³/3 + C. Tenés razón, tu amigo estaba equivocado"
+```
+
+**El modelo local sabe el contexto COMPLETO** — no solo la pregunta, sino todo lo que viniste hablando.
+
+---
+
+### Nivel 4 — Voces Frecuentes (V8)
+
+```
+🎤 Audio 24/7 con Voice ID
+   │
+   ├─ Voz desconocida #1 aparece en 12 audios esta semana
+   ├─ Yartis detecta que es SIEMPRE la misma voz
+   │
+   ▼
+💡 "Oye, noto que hay una persona que aparece seguido en tus audios.
+    ¿Querés que la agregue a tu lista de voces?"
+   │
+   ▼
+TÚ:      "Sí, es mi novia"
+Yartis:  "¿Cómo se llama?"
+TÚ:      "María"
+Yartis:  ✅ "María" agregada a la lista de voces
+```
+
+**Después de esto:**
+```
+María:    "¿Yartis, qué tiempo hace mañana?"
+Yartis:   🟢 Ya conozco a María → procesa como si fuera el usuario
+```
+
+---
+
+### Nivel 5 — Contexto + Prioridad Dinámica (1.0)
+
+```
+NIVELES DE PRIORIDAD:
+
+1️⃣  DUEÑO (tú) + voz fuerte (cerca del mic)
+    → Máxima prioridad, siempre
+
+2️⃣  DUEÑO (tú) + voz suave (lejos del mic)
+    → Alta prioridad
+
+3️⃣  VOZ REGISTRADA + voz fuerte + te habla A TI
+    → Media prioridad
+
+4️⃣  VOZ REGISTRADA + voz suave + tema no relacionado
+    → Baja prioridad
+
+5️⃣  VOZ DESCONOCIDA
+    → Ignorar siempre
+```
+
+**Filtrado inteligente por contexto:**
+```
+ESCENARIO 1: Mamá al teléfono (tema no relacionado)
+  Tú:      "Yartis, ¿cuánto es 2+2?"
+  Mamá:    "Sí mi amor, el supermercado tiene descuento..." (al fondo)
+  → Yartis IGNORA a mamá (no es contigo, tema diferente)
+
+ESCENARIO 2: Mamá te habla directamente
+  Tú:      "Yartis, ¿qué tiempo hace?"
+  Mamá:    "Yartis, ¿cuándo viene tu papá?" (misma sala)
+  → Yartis te responde a TI primero (dueño = prioridad)
+
+ESCENARIO 3: Solo mamá (tú no estás)
+  Mamá:    "Yartis, pon música"
+  → Yartis PROCESA a mamá (es registrada + no estás presente)
+```
+
+**Regla de oro:** Si el DUEÑO está hablando → solo importa él. Los externos se procesan SOLO cuando el dueño no está hablando o cuando hablan DIRECTAMENTE a él.
+
+---
+
+### Arquitectura Técnica del Modo JARVIS
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -74,55 +214,36 @@ MODO JARVIS (V3):
                        │
                        ▼
 ┌─────────────────────────────────────────────────┐
-│        MODELO LIGERO DE DETECCIÓN (~50MB)        │
-│  • Silero VAD (detecta voz humana)               │
-│  • Keyword spotting (detecta palabras clave)     │
-│  • Clasificador de intención (saludo/petición)   │
-└───────┬──────────────────┬──────────────────────┘
-        │                  │
-   No detecta         Detecta algo
-        │                  │
-        ▼                  ▼
-   🟢 Dormido        🟡 Evaluando
-   (sigue el loop)        │
-                          ▼
-                   ┌──────────────┐
-                   │ ¿Qué detectó?│
-                   └──────┬───────┘
-                          │
-            ┌─────────────┼─────────────┐
-            ▼             ▼             ▼
-       Saludo         Petición     "chatarra"
-       ("hola")    ("qué tiempo")  (palabra clave)
-            │             │             │
-            ▼             ▼             ▼
-       Responde      Procesa       🔴 SESIÓN ABIERTA
-       natural       como V2       • Graba todo
-                                   • Espera silencio
-                                   • Limpia audio
-                                   • Procesa batch
-                                   • Responde
+│        🦀 RUST — FILTRADO EN TIEMPO REAL         │
+│  • Voice ID por chunk (SpeechBrain ECAPA-TDNN)   │
+│  • Buffer circular (guardar/liberar chunks)      │
+│  • Detección de "YARTIS" en stream               │
+│  • Unión de chunks (concatenar audio)            │
+│  • Filtrado de silencio/ruido                    │
+└──────────────────────┬──────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────┐
+│        🐍 PYTHON — PROCESAMIENTO                 │
+│  • Whisper transcribe audio completo             │
+│  • Modelo local analiza contexto completo        │
+│  • Genera prompt limpio con palabras del usuario  │
+│  • OpenCode genera respuesta                     │
+│  • Piper TTS habla la respuesta                  │
+└─────────────────────────────────────────────────┘
 ```
-
-### Estados del agente
-
-| Estado | Icono | Qué hace |
-|--------|-------|----------|
-| **Durmiendo** | 🟢 | Modelo ligero escuchando, descarta ruido |
-| **Evaluando** | 🟡 | Detectó algo, evalúa si es relevante |
-| **Hablando** | 🔴 | Procesando y respondiendo al usuario |
-| **Sesión abierta** | 🟣 | Palabra clave activa, grabando todo |
-| **Callado** | ⚪ | Aprendió que no debe hablar aquí |
 
 ### Componentes nuevos para V3
 
 | Componente | Descripción | Dependencias |
 |------------|-------------|--------------|
 | `core/ambient_listener.py` | Loop de escucha continua con modelo ligero | Silero VAD, sounddevice |
-| `core/keyword_spotter.py` | Detección de palabras clave en stream | Silero VAD + modelo custom |
+| `core/keyword_spotter.py` | Detección de "YARTIS" en cualquier posición de la frase | Silero VAD + modelo custom |
 | `core/intent_classifier.py` | Clasificador de intención (saludo/petición/ignorar) | Modelo quantizado ONNX |
 | `core/session_manager.py` | Manejo de sesiones abiertas (grabar → limpiar → procesar) | audio.py existente |
 | `core/voice_isolator.py` | Aislamiento de voz del usuario (limpiar ruido de fondo) | noisereduce existente |
+| `core/buffer_manager.py` | Buffer circular de chunks con congelación | Rust-side |
+| `brain/voice_id.py` | Voice ID por chunk (ya existe, extender para stream) | SpeechBrain ECAPA-TDNN |
 
 ### Configuración del usuario
 
@@ -130,12 +251,16 @@ MODO JARVIS (V3):
 {
   "modo_jarvis": {
     "enabled": true,
+    "nivel": 3,
     "palabra_clave": "chatarra",
     "umbral_confianza": 0.7,
     "max_sesion_segundos": 30,
     "saludos_automaticos": true,
     "horario_activo": "08:00-23:00",
-    "no_molestar": ["reuniones", "gaming"]
+    "no_molestar": ["reuniones", "gaming"],
+    "voces_registradas": ["mamá", "papá", "María"],
+    "voces_frecuentes_auto": true,
+    "prioridad_dinamica": true
   }
 }
 ```
@@ -161,7 +286,8 @@ AHORA:  ambient(modelo ligero) → detecta(intención) → responde O sesión
 La wake word "YARTIS" **no desaparece** — se convierte en una de varias formas de activar. Pero ahora también puedes:
 - Decir "hola" y que te responda sin wake word
 - Usar tu palabra clave para sesiones largas
-- Simplemente hablar y que él detecte si te refieres a él
+- Simplemente hablar y que él detecte si te refiere a él
+- Que Yartis sepa el contexto aunque no le hayas hablado directamente
 
 ### Fase 2: Servicios + Estabilidad (paralelo a JARVIS)
 

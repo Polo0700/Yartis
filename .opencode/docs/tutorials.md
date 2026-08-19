@@ -328,7 +328,7 @@ Expected output:
 ### Summary
 Generally well-implemented authentication with some areas needing attention.
 
-### Critical Issues 🔴
+### Critical Issues 
 1. **[security.py:15]** JWT secret key should be from environment
    - Problem: Using hardcoded secret key
    - Fix: Load from environment variable
@@ -345,16 +345,16 @@ Generally well-implemented authentication with some areas needing attention.
    - Problem: Vulnerable to brute force attacks
    - Fix: Add SlowAPI rate limiter
 
-### Warnings 🟡
+### Warnings 
 1. **[security.py:30]** Consider increasing bcrypt rounds
    - Current: 12 rounds
    - Recommendation: 14 rounds for better security
 
-### Suggestions 🟢
+### Suggestions 
 1. **[auth.py:25]** Add password strength validation
    - Benefit: Prevents weak passwords
 
-### Positive Notes ✅
+### Positive Notes 
 - Good use of passlib with bcrypt
 - Proper exception handling
 - Type hints throughout

@@ -3,7 +3,7 @@ name: asistente-proactivo
 description: "Asistente IA que habla sin que le pidan — detecta contexto, prioriza, y avisa solo cuando importa."
 ---
 
-# Asistente Proactivo 🤖💬
+# Asistente Proactivo 
 
 ## Visión
 
@@ -58,10 +58,10 @@ Mientras el usuario trabaja:
 ## Estados del agente
 
 ```
-🟢 Durmiendo  —  esperando contexto interesante
-🟡 Evaluando  —  viendo si vale la pena hablar
-🔴 Hablando   —  te está diciendo algo
-⚪ Callado    —  aprendió que no debía hablar aquí
+ Durmiendo  —  esperando contexto interesante
+ Evaluando  —  viendo si vale la pena hablar
+ Hablando   —  te está diciendo algo
+ Callado    —  aprendió que no debía hablar aquí
 ```
 
 ## Notas

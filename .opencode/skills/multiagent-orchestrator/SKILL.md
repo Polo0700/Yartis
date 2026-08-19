@@ -17,7 +17,7 @@ Hay **dos formas** de lanzar agentes en background:
 | `run-agent.py` | **~65** (fast path) | Un solo agente, sin dependencias. **Recomendado.** |
 | `multiagent.py` | ~470 (full) | Múltiples agentes con DAG de dependencias o `--watch` |
 
-> ⚡ `multiagent.py --agent X --prompt Y --detach` **delega automáticamente** a `run-agent.py`.
+>  `multiagent.py --agent X --prompt Y --detach` **delega automáticamente** a `run-agent.py`.
 
 ## Archivos clave
 
@@ -106,7 +106,7 @@ Cuando quieras delegar trabajo en background:
 
 ---
 
-## 💰 Cost Model (no ignores los tokens)
+##  Cost Model (no ignores los tokens)
 
 Los agentes consumen tokens. Cada `--detach` cuesta dinero. Si no lo monitoreas, te puedes llevar una sorpresa.
 
@@ -114,9 +114,9 @@ Los agentes consumen tokens. Cada `--detach` cuesta dinero. Si no lo monitoreas,
 
 | Situación | Qué modelo usar | Costo relativo |
 |-----------|----------------|----------------|
-| Investigar docs, buscar en web | Modelo barato (fast) | 🟢 Bajo |
-| Revisar código, análisis simple | Modelo mediano (balanced) | 🟡 Medio |
-| Generar arquitectura, debug complejo | Modelo premium (quality) | 🔴 Alto |
+| Investigar docs, buscar en web | Modelo barato (fast) |  Bajo |
+| Revisar código, análisis simple | Modelo mediano (balanced) |  Medio |
+| Generar arquitectura, debug complejo | Modelo premium (quality) |  Alto |
 
 ### Cómo aplica
 
@@ -130,14 +130,14 @@ python .opencode/agent/run-agent.py --agent rust-expert --prompt "..."
 
 ### Anti-patrones de costo
 
-- ❌ Lanzar 5 agentes premium para tareas que hace un grep
-- ❌ Contextos larguísimos "por si acaso" — pon solo lo necesario
-- ❌ No revisar memory.json y relanzar lo mismo
-- ✅ Usa `--profile fast` por defecto, `quality` solo cuando toca
+-  Lanzar 5 agentes premium para tareas que hace un grep
+-  Contextos larguísimos "por si acaso" — pon solo lo necesario
+-  No revisar memory.json y relanzar lo mismo
+-  Usa `--profile fast` por defecto, `quality` solo cuando toca
 
 ---
 
-## 🔄 Estrategia de Error Recovery
+##  Estrategia de Error Recovery
 
 Los agentes fallan. Timeouts, alucinaciones, APIs caídas. **No es excepción, es operación normal.**
 
@@ -171,14 +171,14 @@ def lanzar_con_reintento(comando, max_intentos=3):
 
 ### Lo que NO hacer
 
-- ❌ Reintentar sin límite — adiós tokens
-- ❌ Ignorar el error y seguir como si nada — builds rotos, datos corruptos
-- ❌ Asumir que el agente siempre devuelve JSON válido
-- ✅ Siempre validar el output del agente antes de usarlo
+-  Reintentar sin límite — adiós tokens
+-  Ignorar el error y seguir como si nada — builds rotos, datos corruptos
+-  Asumir que el agente siempre devuelve JSON válido
+-  Siempre validar el output del agente antes de usarlo
 
 ---
 
-## 🧬 Agent Identity (cada agente necesita personalidad)
+##  Agent Identity (cada agente necesita personalidad)
 
 Un agente sin identidad arranca en blanco cada vez. Con identidad, recuerda qué es, qué sabe hacer y cómo quiere que le hablen.
 
@@ -218,14 +218,14 @@ Experto en Python para Yartis. Escribo código limpio con type hints.
 
 ### Por qué funciona
 
-- ✅ El agente sabe su alcance — no se sale de su dominio
-- ✅ El tono es consistente entre sesiones
-- ✅ No repite errores que ya aprendió
-- ✅ Puedes darle instrucciones permanentes sin repetirlas
+-  El agente sabe su alcance — no se sale de su dominio
+-  El tono es consistente entre sesiones
+-  No repite errores que ya aprendió
+-  Puedes darle instrucciones permanentes sin repetirlas
 
 ---
 
-## 🧠 Arquitectura de Memoria (no solo memory.json)
+##  Arquitectura de Memoria (no solo memory.json)
 
 Un agente que olvida todo cada noche no acumula experiencia. Necesitas **capas** de memoria.
 
@@ -257,7 +257,7 @@ Un agente que olvida todo cada noche no acumula experiencia. Necesitas **capas**
 
 ---
 
-## ✅ Evaluación (¿cómo sabes que tu agente funciona?)
+##  Evaluación (¿cómo sabes que tu agente funciona?)
 
 Sin evaluaciones, estás adivinando. No necesitas nada fancy — una checklist basta.
 
@@ -296,11 +296,11 @@ Sin evaluaciones, estás adivinando. No necesitas nada fancy — una checklist b
 
 ---
 
-## 🧠 Cómo aprender a hacer agentes (y no autosabotearte)
+##  Cómo aprender a hacer agentes (y no autosabotearte)
 
 *Sección escrita para Yartis, basada en experiencia real construyendo un sistema multiagente.*
 
-### 🚧 Los 10 pecados del que construye agentes
+###  Los 10 pecados del que construye agentes
 
 | # | Pecado | Síntoma | Solución |
 |---|--------|---------|----------|
@@ -315,7 +315,7 @@ Sin evaluaciones, estás adivinando. No necesitas nada fancy — una checklist b
 | 9 | **Sin identidad ni memoria persistente** | El agente repite errores, no recuerda preferencias, arranca en blanco | Dale `identity.md` + capas de memoria (sesión/working/largo plazo) |
 | 10 | **Sin evaluación** | No sabes si el agente mejoró o empeoró cuando cambias algo | 5 prompts de prueba por agente, correr antes/después de cambios |
 
-### 🧪 Cómo aprender de verdad (no solo leer)
+###  Cómo aprender de verdad (no solo leer)
 
 1. **Empieza con un agente que haga UNA cosa** — que busque en Google y te traiga resultados. Nada más.
 2. **Luego dale memoria** — que recuerde lo que ya investigó.
@@ -324,7 +324,7 @@ Sin evaluaciones, estás adivinando. No necesitas nada fancy — una checklist b
 
 **La regla de oro:** si tu agente no resuelve un problema que TENÍAS ayer, es overengineering.
 
-### 🔄 Lecciones del proyecto Yartis
+###  Lecciones del proyecto Yartis
 
 - **Los agentes paralelos se pisaron** porque ambos se llamaban `python-expert` y compartían memory.json. Lección: **nombres únicos por tarea.**
 - **El modo `--detach` funciona** pero hay que acordarse de revisar los resultados después.
@@ -334,7 +334,7 @@ Sin evaluaciones, estás adivinando. No necesitas nada fancy — una checklist b
 - **Error recovery no es opcional** — los agentes fallan en silencio. Retry + backoff + logs o se pierde el trabajo.
 - **Los tokens no son gratis** — lanzar 3 agentes premium porque sí cuesta como 30 ejecuciones de código local.
 
-### 📚 Orden recomendado para aprender
+###  Orden recomendado para aprender
 
 ```
 1. Haz prompts manuales           →  entiendes qué funciona
@@ -344,7 +344,7 @@ Sin evaluaciones, estás adivinando. No necesitas nada fancy — una checklist b
 5. Refina y simplifica            →  aprendes a no sobreingenieriar
 ```
 
-### 🚩 Bandera roja de autosabotaje
+###  Bandera roja de autosabotaje
 
 Si te encuentras diciendo cualquiera de estas, **para**:
 
@@ -353,7 +353,7 @@ Si te encuentras diciendo cualquiera de estas, **para**:
 - "Mejor espero a tener el diseño perfecto"
 - "Esto se puede resolver con un script de 10 líneas pero voy a usar agentes"
 
-### ✅ Checklist diario para no sabotearse
+###  Checklist diario para no sabotearse
 
 - [ ] ¿Estoy resolviendo un problema real que tengo AHORA?
 - [ ] ¿Puedo hacerlo más simple?

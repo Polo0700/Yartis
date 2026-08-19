@@ -1,9 +1,13 @@
 import time
-import sounddevice as sd
-import numpy as np
+
 import noisereduce as nr
-from . import config
+import numpy as np
+import sounddevice as sd
 import soundfile as sf
+
+import reduce_noise
+
+from . import config
 
 
 class Audio_Work:
@@ -21,6 +25,7 @@ class Audio_Work:
         self.microfonoACT = True
         self.callback = None
         self.audio = None
+        self.engine = reduce_noise.AudioEngine(16000)
 
     def startMic(self):
         self.microfono = sd.InputStream(
@@ -50,11 +55,15 @@ class Audio_Work:
             self.microfono.stop()
             self.microfono.close()
             self.microfono = None
-            self.reduceNoise()
 
     def readMic(self, indata):
         if self.microfono:
             self.buffer.append(indata.copy())
+            if self.buffer:
+                audio = np.concatenate(self.buffer).flatten()
+                resultado = self.engine.reduce_noise(audio.tolist())
+                self.audio = np.array(audio, dtype=np.float32) / 32768.0
+                return audio
 
     def recordSilence(self, indata, *args):
         self.readMic(indata)
@@ -62,18 +71,21 @@ class Audio_Work:
         if self.microfono:
             if volumen < self.umbral_silencio:
                 self.pasos_silencio += 1
+                # Debug cada ~1s
+                if self.pasos_silencio % 15 == 1:
+                    print(
+                        f"  [..] silencio: paso {self.pasos_silencio}/{self.pasos_silencio_limite}",
+                        flush=True,
+                    )
                 if self.pasos_silencio >= self.pasos_silencio_limite:
+                    print(f"  [..] Silencio detectado, cerrando mic", flush=True)
                     self.microfonoACT = False
                     self.pasos_silencio = 0
                     return
             else:
+                if self.pasos_silencio > 0:
+                    print(
+                        f"  [!] Voz detectada! vol={volumen:.0f} (reset silencio)",
+                        flush=True,
+                    )
                 self.pasos_silencio = 0
-
-    def reduceNoise(self):
-        if self.buffer:
-            audio = np.concatenate(self.buffer).flatten()
-            audio = audio.astype(np.float32) / 32768.0
-            audio = nr.reduce_noise(y=audio, sr=self.Rate)
-            self.audio = audio
-            # print(audio)  # debug: audio crudo
-            return self.audio

@@ -1,6 +1,6 @@
 import os
 
-# 🛠 CUDA deshabilitado temporalmente (incompatible con drivers 13.0)
+# CUDA deshabilitado temporalmente (incompatible con drivers 13.0)
 # Cuando tengas CUDA funcionando, borra o comenta esta línea:
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 

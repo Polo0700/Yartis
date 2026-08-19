@@ -69,15 +69,15 @@ Invoked for:
 ### Summary
 Brief assessment.
 
-### Critical 🔴
+### Critical 
 1. **[File:Line]** Issue — must fix
 
-### Warnings 🟡
+### Warnings 
 1. **[File:Line]** Issue — should address
 
-### Suggestions 🟢
+### Suggestions 
 1. **[File:Line]** — optional improvement
 
-### Positive Notes ✅
+### Positive Notes 
 - Good patterns used
 ```

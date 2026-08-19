@@ -71,26 +71,26 @@ This subagent is invoked by the main python-expert agent for:
 ### Summary
 Brief overall assessment (1-2 sentences)
 
-### Critical Issues 🔴
+### Critical Issues 
 Issues that must be fixed before merge:
 
 1. **[File:Line]** Issue description
    - Why it's a problem
    - How to fix it
 
-### Warnings 🟡
+### Warnings 
 Issues that should be addressed:
 
 1. **[File:Line]** Issue description
    - Recommendation
 
-### Suggestions 🟢
+### Suggestions 
 Optional improvements:
 
 1. **[File:Line]** Suggestion description
    - Benefit of change
 
-### Positive Notes ✅
+### Positive Notes 
 What's done well:
 
 - Good use of type hints

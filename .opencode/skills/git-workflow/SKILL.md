@@ -77,15 +77,15 @@ El archivo `RASTRECK.md` en la raíz lleva el registro diario de racha:
 ```markdown
 # RASTRECK — Yartis
 
-| Fecha     | ⭐  | Resumen |
+| Fecha     |   | Resumen |
 |-----------|-----|---------|
-| 2026-06-08| ⭐ 1 | Config inicial del proyecto |
-| 2026-06-09| ⭐ 2 | Migración Rust a core/src-tauri + skills |
+| 2026-06-08|  1 | Config inicial del proyecto |
+| 2026-06-09|  2 | Migración Rust a core/src-tauri + skills |
 ```
 
 ### Reglas
-- ⭐ N = días **consecutivos** programando
-- Si un día no se programa, reinicia a ⭐ 1
+-  N = días **consecutivos** programando
+- Si un día no se programa, reinicia a  1
 - Agregar fila CADA día que se programe
 - Resumen breve de lo que se logró
 
@@ -112,8 +112,8 @@ git push
 
 ## Qué NO hacer
 
-- ❌ Commits gigantes sin descripción clara
-- ❌ `git add -A` sin revisar primero
-- ❌ Pushear a main sin verificar que compila
-- ❌ Mensajes como "arreglos", "cambios", "update"
-- ❌ Forzar push con `--force`
+-  Commits gigantes sin descripción clara
+-  `git add -A` sin revisar primero
+-  Pushear a main sin verificar que compila
+-  Mensajes como "arreglos", "cambios", "update"
+-  Forzar push con `--force`

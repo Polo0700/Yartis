@@ -1,8 +1,16 @@
 import argparse
+import asyncio
 import os
-from core.wake import wake
+import wave
+from pathlib import Path
+
+import numpy as np
+import sounddevice as sd
+import websockets
+from piper import PiperVoice
+
 from brain.opencode import peticion
-import pyttsx3
+from core.wake import wake
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--cpu", action="store_true", help="Forzar CPU aunque haya GPU")
@@ -14,34 +22,68 @@ if args.cpu:
 class yartis:
     def __init__(self):
         self.peticion = peticion()
-        self.tts = pyttsx3.init()
-        self.tts.setProperty("rate", 150)
+        self.tts = PiperVoice.load(
+            str(
+                Path(__file__).parent / "core" / "models" / "es_Es-sharvard-medium.onnx"
+            )
+        )
+        self.websocketURL = "ws://localhost:8765"
 
-    def hablar(self, texto):
+    async def hablar(self, texto):
         print(f"Yartis dice: {texto}")
-        self.tts.say(texto)
-        self.tts.runAndWait()
+        with wave.open("temp.wav", "w") as wav:
+            self.tts.synthesize_wav(texto, wav)
+        with wave.open("temp.wav", "r") as wav:
+            data = np.frombuffer(wav.readframes(wav.getnframes()), dtype=np.int16)
+            rate = wav.getframerate()
+        sd.play(data, rate)
+        stream = sd.get_stream()
+        res = "0x0x0Polo0701Audio"
+        try:
+            async with websockets.connect(self.websocketURL) as websocket:
+                await websocket.send(res)
+        except Exception as e:
+            print(f"Error al enviar mensaje al servidor: {e}")
+        while stream.active:
+            duracion = len(data) / rate
+            if stream.time > duracion * 0.98:
+                res = "0x0x0Polo0700Audio"
+                try:
+                    async with websockets.connect(self.websocketURL) as websocket:
+                        await websocket.send(res)
+                except Exception as e:
+                    print(f"Error al enviar mensaje al servidor: {e}")
+                break
+        sd.wait()
+        sd.stop()
 
-    def iniciar(self):
+    async def iniciar(self):
         while True:
             self.wake = wake()
-            self.hablar("Esperando Wake word")
+            await self.hablar("Esperando Wake word")
             self.wake.iniciar()
-            self.hablar("Yartis está escuchando...")
+            await self.hablar("Yartis está escuchando...")
             print("Wake word detectada, procesando petición...")
             print("Yartis escuchando peticion")
-            respuesta = self.peticion.ejecutar()
+            respuesta = await self.peticion.ejecutar()
             if not respuesta:
                 continue
+            try:
+                respuestaf = f"0x0x0Polo0702VozRes|{respuesta}"
+                async with websockets.connect(self.websocketURL) as websocket:
+                    await websocket.send(respuestaf)
+                    respuesta = await websocket.recv()
+            except Exception as e:
+                print(f"Error al recibir respuesta del servidor: {e}")
             print("Yartis para de escuchar peticion")
             print(f"Respuesta de Yartis: {respuesta}")
-            self.hablar(respuesta)
+            await self.hablar(respuesta)
 
 
 if __name__ == "__main__":
     try:
         app = yartis()
-        app.iniciar()
+        asyncio.run(app.iniciar())
     except (KeyboardInterrupt, SystemExit):
         print("\nYartis cerrado por el usuario")
     except Exception as e:

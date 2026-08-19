@@ -1,0 +1,88 @@
+{
+  "proyecto": "Yartis - Sistema de Contraseñas AES + Argon2",
+  "descripcion": "Sistema híbrido de autenticación para Yartis que permite a OpenCode ejecutar comandos sudo en Linux sin pedir contraseña al usuario.",
+  "fecha": "2026-07-17",
+  "autor": "Polo0700",
+  "flujo": {
+    "paso_1": {
+      "nombre": "Login en React",
+      "descripcion": "Usuario ingresa contraseña en Ajustes.tsx",
+      "archivos": ["src/components/Ajustes.tsx"],
+      "estado": "completado"
+    },
+    "paso_2": {
+      "nombre": "Verificación con Argon2",
+      "descripcion": "Rust hashea la contraseña con picker() para verificación futura",
+      "archivos": ["src-tauri/src/lib.rs"],
+      "funcion": "picker()",
+      "estado": "completado"
+    },
+    "paso_3": {
+      "nombre": "Encriptación con AES",
+      "descripcion": "Rust encripta la contraseña con AES-GCM para guardar en archivo",
+      "dependencia": "aes-gcm crate",
+      "estado": "pendiente"
+    },
+    "paso_4": {
+      "nombre": "Guardar archivo protegido",
+      "descripcion": "Guardar en config/users/{usuario}.password con permisos 600",
+      "permisos": "600 (solo dueño puede leer/escribir)",
+      "estado": "pendiente"
+    },
+    "paso_5": {
+      "nombre": "Recuperar y ejecutar sudo",
+      "descripcion": "Cuando OpenCode necesita sudo: verificar Argon2 → desencriptar AES → ejecutar sudo -S",
+      "comando": "echo 'password' | sudo -S {comando}",
+      "estado": "pendiente"
+    },
+    "paso_6": {
+      "nombre": "Limpiar memoria",
+      "descripcion": "Usar zeroize para borrar la contraseña de memoria RAM después de cada uso",
+      "dependencia": "zeroize crate",
+      "estado": "pendiente"
+    }
+  },
+  "seguridad": {
+    "argona2": {
+      "uso": "Verificación de contraseña",
+      "propiedad": "Unidireccional (no reversible)",
+      "beneficio": "Nadie puede falsificar la verificación"
+    },
+    "aes_gcm": {
+      "uso": "Almacenamiento de contraseña para recuperación",
+      "propiedad": "Bidireccional (reversible con key)",
+      "beneficio": "Permite usar la contraseña con sudo -S"
+    },
+    "permisos_600": {
+      "uso": "Proteger archivo de contraseña",
+      "beneficio": "Solo el dueño (Yartis) puede acceder"
+    },
+    "zeroize": {
+      "uso": "Limpiar memoria RAM",
+      "beneficio": "La contraseña no persiste en memoria después de usar"
+    },
+    "rust_execution": {
+      "uso": "Ejecutar comandos sudo",
+      "beneficio": "No se ve en bash_history ni process list"
+    }
+  },
+  "archivos_importantes": {
+    "rust": ["src-tauri/src/lib.rs", "src-tauri/Cargo.toml"],
+    "react": ["src/components/Ajustes.tsx"],
+    "config": ["config/users/{usuario}.password"],
+    "brain": ["brain/opencode.py", "brain/confirmacion.py"]
+  },
+  "dependencias_rust": {
+    "argon2": "Hash de contraseñas (ya instalado)",
+    "aes-gcm": "Encriptación AES (ya instalado)",
+    "zeroize": "Limpieza de memoria (pendiente instalar)"
+  },
+  "notas": [
+    "Argon2 ya funciona (picker/checkpicker)",
+    "AES ya está en Cargo.toml pero no se usa para passwords aún",
+    "El modelo local de IA transforma petición del usuario a comando Linux",
+    "El sistema detecta SO con prefijo: L para Linux, W para Windows",
+    "La contraseña nunca se ve en bash_history porque Rust ejecuta directamente",
+    "Steam usa arquitectura similar de seguridad"
+  ]
+}

@@ -313,7 +313,7 @@ Combine insights from all tracks into a unified retrospective.
 |--------|--------|--------|--------|
 | **Velocity** | [points] | [points] | [↑/↓/→] |
 | **Completion Rate** | [%] | [%] | [↑/↓/→] |
-| **Test Coverage** | 90% | [%] | [✓/✗] |
+| **Test Coverage** | 90% | [%] | [/] |
 | **Bug Count** | [target] | [actual] | [↑/↓/→] |
 | **Cycle Time** | [days] | [days] | [↑/↓/→] |
 

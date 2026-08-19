@@ -439,11 +439,11 @@ Skill content with patterns, examples, best practices...
 ### Name Validation
 
 Valid skill names:
-- `python-fundamentals` ✓
-- `python-fastapi` ✓
-- `Python_FastAPI` ✗ (must be lowercase)
-- `python--fastapi` ✗ (no consecutive hyphens)
-- `-python` ✗ (cannot start with hyphen)
+- `python-fundamentals` 
+- `python-fastapi` 
+- `Python_FastAPI`  (must be lowercase)
+- `python--fastapi`  (no consecutive hyphens)
+- `-python`  (cannot start with hyphen)
 
 Regex: `^[a-z0-9]+(-[a-z0-9]+)*$`
 

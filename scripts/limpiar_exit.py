@@ -77,7 +77,7 @@ target_peak = 0.65
 data = data / peak * target_peak
 
 sf.write("assets/Exit_main_processed.wav", data, fs)
-print(f"✅ Procesado guardado: assets/Exit_main_processed.wav")
+print(f"[OK] Procesado guardado: assets/Exit_main_processed.wav")
 print(f"   Original:     {len(original)/fs:.3f}s, {np.max(np.abs(original)):.3f} peak")
 print(f"   Procesado:   {len(data)/fs:.3f}s, {np.max(np.abs(data)):.3f} peak")
 print(f"   Cambio RMS:  {np.sqrt(np.mean(original**2)):.4f} → {np.sqrt(np.mean(data**2)):.4f}")

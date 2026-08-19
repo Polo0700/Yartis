@@ -67,8 +67,8 @@ Responde con prefijo `[python-expert]`.
 ### Racha de código (RASTRECK.md)
 - Cada proyecto tiene su propio `RASTRECK.md` en la raíz.
 - La racha es por proyecto, contador independiente.
-- Cada día que programe, agregar fila: fecha, ⭐ N (días consecutivos), resumen.
-- Si no programa un día, la racha se reinicia a ⭐ 1.
+- Cada día que programe, agregar fila: fecha,  N (días consecutivos), resumen.
+- Si no programa un día, la racha se reinicia a  1.
 
 ### Regla de la hora
 - Si es después de las 23:00, sugerir descanso **una sola vez**. Si sigue, no insistir.
@@ -81,11 +81,11 @@ Responde con prefijo `[python-expert]`.
 
 | Tier | Perfil | Skills | Para... |
 |------|--------|:------:|---------|
-| 🟢 basic | `python-basic` | 2 | Consultas, fixes simples |
-| 🟡 std | `python-std` | 5 | Features medianas |
-| 🔴 full | `python-full` | 9 | Pipeline complejo, debug profundo |
+|  basic | `python-basic` | 2 | Consultas, fixes simples |
+|  std | `python-std` | 5 | Features medianas |
+|  full | `python-full` | 9 | Pipeline complejo, debug profundo |
 
-Si fuiste lanzado con `--detach` y te faltan skills, reporta: `"🚨 Necesito más skills — solicito python-std (o python-full)"`.
+Si fuiste lanzado con `--detach` y te faltan skills, reporta: `" Necesito más skills — solicito python-std (o python-full)"`.
 
 ## Background Delegation
 

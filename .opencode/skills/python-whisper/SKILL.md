@@ -21,11 +21,11 @@ description: |
 
 | Modelo | Parámetros | RAM | GPU VRAM | Velocidad | Precisión |
 |--------|-----------|-----|----------|-----------|-----------|
-| `tiny` | 39M | ~1GB | ~1GB | ⚡⚡⚡⚡⚡ | ⭐⭐ |
-| `base` | 74M | ~1GB | ~1GB | ⚡⚡⚡⚡ | ⭐⭐⭐ |
-| `small` | 244M | ~2GB | ~2GB | ⚡⚡⚡ | ⭐⭐⭐⭐ |
-| `medium` | 769M | ~5GB | ~5GB | ⚡⚡ | ⭐⭐⭐⭐⭐ |
-| `large-v3` | 1550M | ~10GB | ~10GB | ⚡ | ⭐⭐⭐⭐⭐⭐ |
+| `tiny` | 39M | ~1GB | ~1GB |  |  |
+| `base` | 74M | ~1GB | ~1GB |  |  |
+| `small` | 244M | ~2GB | ~2GB |  |  |
+| `medium` | 769M | ~5GB | ~5GB |  |  |
+| `large-v3` | 1550M | ~10GB | ~10GB |  |  |
 
 **Recomendación Yartis:** `small` (balance velocidad/precisión, funciona en GPUs de 4GB+).
 

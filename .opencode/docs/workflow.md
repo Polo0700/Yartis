@@ -205,18 +205,18 @@ Review src/core/auth.py for:
 ```markdown
 ## Code Review: src/core/auth.py
 
-### Critical Issues 🔴
+### Critical Issues 
 1. **[auth.py:42]** Hardcoded secret key
    - Fix: Use environment variable
 
-### Warnings 🟡
+### Warnings 
 1. **[auth.py:15]** No rate limiting on login
    - Recommendation: Add SlowAPI rate limiter
 
-### Suggestions 🟢
+### Suggestions 
 1. **[auth.py:30]** Consider using passlib with bcrypt
 
-### Positive Notes ✅
+### Positive Notes 
 - Good use of type hints
 - Proper exception handling
 ```

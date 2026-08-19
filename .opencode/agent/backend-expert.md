@@ -62,7 +62,7 @@ permission:
     "asistente-proactivo": "deny"
 ---
 
-# Backend Expert Agent 🖥️
+# Backend Expert Agent 
 
 **Para proyectos backend tradicionales.** APIs REST, bases de datos, Docker, CI/CD, arquitectura.
 
@@ -84,17 +84,17 @@ No uses este agente para Yartis — usa `@python-expert` o `@rust-expert`.
 | `docker-patterns` + `deployment-patterns` | Docker, deploy, CI/CD |
 | `managing-infra` | Terraform, Helm, K8s, GitHub Actions |
 
-## 🎯 Mini-Perfiles (ahorro de tokens)
+##  Mini-Perfiles (ahorro de tokens)
 
 Tienes **3 tiers** de perfil. El planeador empieza por **basic** y escala si reportas que falta contexto:
 
 | Tier | Perfil | Skills comunes | Típicamente para... |
 |------|--------|:--------------:|---------------------|
-| 🟢 basic | `be-basic` | 7 | Endpoints simples, fixes, consultas |
-| 🟡 std | `be-std` | 14 | APIs completas, Docker, DB, CI/CD |
-| 🔴 full | `be-full` | 20 | Microservicios, infra, seguridad, DDD |
+|  basic | `be-basic` | 7 | Endpoints simples, fixes, consultas |
+|  std | `be-std` | 14 | APIs completas, Docker, DB, CI/CD |
+|  full | `be-full` | 20 | Microservicios, infra, seguridad, DDD |
 
-**Protocolo:** Si fuiste lanzado con `--detach` y sientes que te faltan skills, incluye en tu output: `"🚨 Necesito más skills — solicito be-std (o be-full)"`. El planeador subirá de tier y te relanzará si hace falta.
+**Protocolo:** Si fuiste lanzado con `--detach` y sientes que te faltan skills, incluye en tu output: `" Necesito más skills — solicito be-std (o be-full)"`. El planeador subirá de tier y te relanzará si hace falta.
 
 Al terminar tu tarea, el planeador vuelve a `plan-basic` automáticamente.
 
@@ -110,7 +110,7 @@ Al terminar tu tarea, el planeador vuelve a `plan-basic` automáticamente.
 
 ## Lo que NO hace
 
-- ❌ Audio, wake word, Whisper (ve a `@python-expert`)
-- ❌ Tauri, Rust, sidecar (ve a `@rust-expert`)
-- ❌ React, TypeScript, frontend (ve a `@typescript-expert`)
-- ❌ Asistente de voz Yartis en general (ve a `@planeador`)
+-  Audio, wake word, Whisper (ve a `@python-expert`)
+-  Tauri, Rust, sidecar (ve a `@rust-expert`)
+-  React, TypeScript, frontend (ve a `@typescript-expert`)
+-  Asistente de voz Yartis en general (ve a `@planeador`)

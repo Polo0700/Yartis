@@ -91,7 +91,7 @@ async fn iniciar_sidecar(app: AppHandle) -> Result<(), String> {
 }
 ```
 
-## ⚠️ PyInstaller doble proceso
+##  PyInstaller doble proceso
 
 `child.kill()` solo mata el bootloader, no el Python real.
 

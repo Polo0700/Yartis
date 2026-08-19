@@ -1,0 +1,56 @@
+ARREGLA ESTOS 3 PROBLEMAS en src-tauri/src/lib.rs y src-tauri/tauri.conf.json:
+
+## Diagnostico
+1. Python no se ejecuta en release mode porque shell.command('python') resuelve al Python del SISTEMA (C:\Python314\python.exe), NO al del .venv que tiene los paquetes
+2. El .expect() en setup() crashea Tauri si Python falla -> React ni carga
+3. El frontendDist cambio de '../build' a '../dist' pero React dejo de cargar (probablemente por el crash)
+
+## Archivos a modificar
+
+### src-tauri/src/lib.rs (CAMBIOS OBLIGATORIOS)
+
+**A. Reemplazar .expect() con manejo de error suave:**
+ACTUAL:
+```rust
+let (mut rx, child) = shell
+    .command("python")
+    .args(["yartis.py"])
+    .current_dir(ruta)
+    .spawn()
+    .expect("Error de Yartis(python)");
+```
+
+NUEVO: Usar match o if let para loggear el error pero NO panic. Si falla, que muestre un error en stderr pero que la app SIGA. Usa `eprintln!` para loggear y no hagas nada mas.
+
+**B. Usar la ruta ABSOLUTA al python del .venv:**
+En lugar de solo "python", usa una ruta que busque:
+Primero: ruta.join(".venv/Scripts/python.exe") (el del proyecto)
+Segundo: "python" del PATH (fallback)
+Tercero: intentar con "python3" (fallback)
+
+El current_dir ya apunta a la raiz del proyecto.
+
+**C. La funcion `inicio` tiene #[tauri::command] - esta bien, asegurate que no tenga errores.**
+
+### src-tauri/tauri.conf.json (CAMBIOS OBLIGATORIOS)
+
+**D. Agregar entrada en shell.scope para el python del .venv:**
+```json
+{
+  "name": "python-venv",
+  "cmd": ".venv/Scripts/python.exe",
+  "args": true
+}
+```
+
+**E. Verificar que el `frontendDist` esta en "../dist" (YA esta correcto).**
+
+## Verificacion
+- `cargo build --release` debe compilar SIN errores
+- La app no debe crashear aunque Python falle
+
+## IMPORTANTE
+- Devolver SOLO:
+  1. Confirmacion de que compila (cargo build --release exitoso)
+  2. Lista de cambios que hiciste
+  3. Cualquier error que encontraste

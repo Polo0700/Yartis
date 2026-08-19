@@ -1,4 +1,4 @@
-# 🗺️ Yartis — Roadmap de Desarrollo
+#  Yartis — Roadmap de Desarrollo
 
 > *"Un asistente de voz que no solo responde, sino que aprende, enseña, crea contenido y genera experiencias de estudio completas."*
 
@@ -8,8 +8,8 @@
 
 | Versión | Estado | Descripción |
 |---------|--------|-------------|
-| **V1** | ✅ Completado | Pipeline básico: wake word → grabación → Whisper → OpenCode → TTS |
-| **V2** | 🔄 En progreso | WebSocket Hub + Clasificador local + Servicios (Música, Correo, Calendario, Telegram, Navegador) |
+| **V1** |  Completado | Pipeline básico: wake word → grabación → Whisper → OpenCode → TTS |
+| **V2** |  En progreso | WebSocket Hub + Clasificador local + Servicios (Música, Correo, Calendario, Telegram, Navegador) |
 | **V3** | ⏳ Pendiente | **MODO JARVIS** — Escucha ambiental continua + Detección de intención pasiva + Sesiones persistentes |
 | **V3.5** | ⏳ Pendiente | **OPTIMIZACIÓN** — Modelos quantizados, lazy loading, Rust en hot path, cache inteligente |
 | **V4** | ⏳ Pendiente | Skills generales — Web, pantalla, acciones |
@@ -26,15 +26,15 @@
 
 | Paso | Estado | Detalle |
 |------|--------|---------|
-| server.py como WebSocket HUB | ✅ | `core/server.py` — orquesta comunicación Rust ↔ Python |
-| yartis.py como cliente WebSocket | ✅ | `yartis.py` — cliente que se conecta al hub |
-| Clasificador local con sentence-transformers | ✅ | Modelo `paraphrase-multilingual-MiniLM-L12-v2`. Intenta: MUSICA, CORREO, CALENDARIO, TELEGRAM, NAVEGADOR |
+| server.py como WebSocket HUB |  | `core/server.py` — orquesta comunicación Rust ↔ Python |
+| yartis.py como cliente WebSocket |  | `yartis.py` — cliente que se conecta al hub |
+| Clasificador local con sentence-transformers |  | Modelo `paraphrase-multilingual-MiniLM-L12-v2`. Intenta: MUSICA, CORREO, CALENDARIO, TELEGRAM, NAVEGADOR |
 | Servicio de Música (reproductor real) | ⏳ | Reemplazar `prueba.py` con servicio real (yt-dlp o similar). Conectar output a TTS |
 | Servicio de Correo | ⏳ | Pendiente |
 | Servicio de Calendario | ⏳ | Pendiente |
 | Servicio de Telegram | ⏳ | Pendiente |
 | Servicio de Navegador | ⏳ | Pendiente |
-| Herramientas propias (CRUD sin OpenCode) | ✅ | `opencode.py` con `0x0x0Polo0700|accion|ruta|contenido|explicacion`. Confirmador aprueba, ejecuta directo. 0 tokens |
+| Herramientas propias (CRUD sin OpenCode) |  | `opencode.py` con `0x0x0Polo0700|accion|ruta|contenido|explicacion`. Confirmador aprueba, ejecuta directo. 0 tokens |
 | Meta-servicio Música v2.1 (multi-fuente) | ⏳ | yt-dlp + MusicBrainz + TheAudioDB + Last.fm + Genius + SoundCloud + Jamendo. Cache local |
 
 **Filosofía V2:** El LLM solo orquesta. Los scripts ejecutan todo. El usuario tiene control total de tokens.
@@ -67,7 +67,7 @@ NIVEL 5: Contexto + prioridad dinámica (1.0)
 ### Nivel 1 — Wake Word Clásica (V2)
 
 ```
-🎤 Off  →  "YARTIS"  →  🎤 On  →  Procesa  →  Responde
+ Off  →  "YARTIS"  →   On  →  Procesa  →  Responde
                    ↑ wake word obligatoria
 ```
 
@@ -78,18 +78,18 @@ NIVEL 5: Contexto + prioridad dinámica (1.0)
 ### Nivel 2 — Escucha Continua + Detección de Intención (V3)
 
 ```
-🎤 Siempre escuchando (modelo ligero, quantizado, ~50MB)
+ Siempre escuchando (modelo ligero, quantizado, ~50MB)
    │
-   ├─ Ruido ambiental → ignora → sigue dormido 🟢
+   ├─ Ruido ambiental → ignora → sigue dormido 
    │
-   ├─ "hola" → detecta saludo → responde naturalmente 🔵
+   ├─ "hola" → detecta saludo → responde naturalmente 
    │
-   ├─ "chatarra" (palabra clave de usuario) → sesión abierta 🔴
+   ├─ "chatarra" (palabra clave de usuario) → sesión abierta 
    │    → micrófono queda prendido
    │    → usuario habla libremente
    │    → al finalizar: limpieza de ruido → procesa → responde
    │
-   └─ silencio largo → vuelve a dormir 🟢
+   └─ silencio largo → vuelve a dormir 
 ```
 
 **Opcional** — el usuario elige si activar este modo o quedarse con la wake word clásica.
@@ -99,22 +99,22 @@ NIVEL 5: Contexto + prioridad dinámica (1.0)
 ### Nivel 3 — Voice ID + Buffer Inteligente (V3)
 
 ```
-🎤 Audio 24/7
+ Audio 24/7
    │
    ▼
-🦀 RUST (filtrado rápido en tiempo real)
-   ├─ Voice ID: ¿Es el DUEÑO? → 🟢 Guarda chunks
-   ├─ Voice ID: ¿Es OTRO? → ⚪ Ignora
+ RUST (filtrado rápido en tiempo real)
+   ├─ Voice ID: ¿Es el DUEÑO? →  Guarda chunks
+   ├─ Voice ID: ¿Es OTRO? →  Ignora
    │
    ▼
 BUFFER INTELIGENTE:
    ├─ Empezás a hablar → chunks se acumulan en temp
-   ├─ Decís "YARTIS" → 🟡 buffer se CONGELA (no se libera)
+   ├─ Decís "YARTIS" →  buffer se CONGELA (no se libera)
    ├─ Seguís hablando → chunks siguen entrando al buffer
-   └─ Dejás de hablar → 🔴 PROCESA TODO el buffer
+   └─ Dejás de hablar →  PROCESA TODO el buffer
    │
    ▼
-🐍 PYTHON
+ PYTHON
    ├─ Whisper transcribe el audio completo (chunks unidos)
    ├─ Modelo local lee TODO el contexto
    ├─ Entiende: "estaba explicando X, yartis me preguntó Y"
@@ -139,26 +139,26 @@ Yartis:    "La integral de x² es x³/3 + C. Tenés razón, tu amigo estaba equi
 ### Nivel 4 — Voces Frecuentes (V8)
 
 ```
-🎤 Audio 24/7 con Voice ID
+ Audio 24/7 con Voice ID
    │
    ├─ Voz desconocida #1 aparece en 12 audios esta semana
    ├─ Yartis detecta que es SIEMPRE la misma voz
    │
    ▼
-💡 "Oye, noto que hay una persona que aparece seguido en tus audios.
+ "Oye, noto que hay una persona que aparece seguido en tus audios.
     ¿Querés que la agregue a tu lista de voces?"
    │
    ▼
 TÚ:      "Sí, es mi novia"
 Yartis:  "¿Cómo se llama?"
 TÚ:      "María"
-Yartis:  ✅ "María" agregada a la lista de voces
+Yartis:   "María" agregada a la lista de voces
 ```
 
 **Después de esto:**
 ```
 María:    "¿Yartis, qué tiempo hace mañana?"
-Yartis:   🟢 Ya conozco a María → procesa como si fuera el usuario
+Yartis:    Ya conozco a María → procesa como si fuera el usuario
 ```
 
 ---
@@ -168,19 +168,19 @@ Yartis:   🟢 Ya conozco a María → procesa como si fuera el usuario
 ```
 NIVELES DE PRIORIDAD:
 
-1️⃣  DUEÑO (tú) + voz fuerte (cerca del mic)
+1  DUEÑO (tú) + voz fuerte (cerca del mic)
     → Máxima prioridad, siempre
 
-2️⃣  DUEÑO (tú) + voz suave (lejos del mic)
+2  DUEÑO (tú) + voz suave (lejos del mic)
     → Alta prioridad
 
-3️⃣  VOZ REGISTRADA + voz fuerte + te habla A TI
+3  VOZ REGISTRADA + voz fuerte + te habla A TI
     → Media prioridad
 
-4️⃣  VOZ REGISTRADA + voz suave + tema no relacionado
+4  VOZ REGISTRADA + voz suave + tema no relacionado
     → Baja prioridad
 
-5️⃣  VOZ DESCONOCIDA
+5  VOZ DESCONOCIDA
     → Ignorar siempre
 ```
 
@@ -284,7 +284,7 @@ CASO 3: Sin WiFi ni Bluetooth
                        │
                        ▼
 ┌─────────────────────────────────────────────────┐
-│        🦀 RUST — FILTRADO EN TIEMPO REAL         │
+│         RUST — FILTRADO EN TIEMPO REAL         │
 │  • Voice ID por chunk (SpeechBrain ECAPA-TDNN)   │
 │  • Buffer circular (guardar/liberar chunks)      │
 │  • Detección de "YARTIS" en stream               │
@@ -294,7 +294,7 @@ CASO 3: Sin WiFi ni Bluetooth
                        │
                        ▼
 ┌─────────────────────────────────────────────────┐
-│        🐍 PYTHON — PROCESAMIENTO                 │
+│         PYTHON — PROCESAMIENTO                 │
 │  • Whisper transcribe audio completo             │
 │  • Modelo local analiza contexto completo        │
 │  • Genera prompt limpio con palabras del usuario  │
@@ -380,12 +380,12 @@ La wake word "YARTIS" **no desaparece** — se convierte en una de varias formas
 ```
 SIN OPTIMIZAR (V3 crudo):
 
-🎤 Escucha continua (Silero VAD)    → ~50MB RAM, ~2% CPU
-🧠 Voice ID por chunk               → ~200MB RAM, ~5% CPU
-🗣️ Whisper (transcripción)          → ~1GB RAM, ~15% GPU
-💬 Modelo local (análisis)          → ~2GB RAM, ~20% GPU
-🔊 Piper TTS                        → ~100MB RAM, ~3% CPU
-📡 BLE coordinación                 → ~10MB RAM, ~1% CPU
+ Escucha continua (Silero VAD)    → ~50MB RAM, ~2% CPU
+ Voice ID por chunk               → ~200MB RAM, ~5% CPU
+ Whisper (transcripción)          → ~1GB RAM, ~15% GPU
+ Modelo local (análisis)          → ~2GB RAM, ~20% GPU
+ Piper TTS                        → ~100MB RAM, ~3% CPU
+ BLE coordinación                 → ~10MB RAM, ~1% CPU
                                   ─────────────────────────
                                   TOTAL: ~3.5GB RAM, ~46% CPU/GPU
 ```
@@ -602,7 +602,7 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 
 ---
 
-## 🔧 Stack Técnico por Versión
+##  Stack Técnico por Versión
 
 | Versión | Stack Principal |
 |---------|----------------|
@@ -617,10 +617,10 @@ Sesión de estudio completa → OpenCode genera sitio web interactivo
 
 ---
 
-## 📊 Resumen Visual
+##  Resumen Visual
 
 ```
-V1 ✅ → V2 🔄 → V3 ⏳ → V3.5 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳ → V8/1.0 ⏳
+V1  → V2  → V3 ⏳ → V3.5 ⏳ → V4 ⏳ → V5 ⏳ → V6 ⏳ → V7 ⏳ → V8/1.0 ⏳
 Pipeline    Servicios  JARVIS     Optimizar  Skills      Educación    Renderizado  Plataforma  RELEASE
 básico      + clasif.  Escucha    CPU/GPU/   generales   + matemáticas de video     de notas    FINAL
                        Continua   RAM                    Excalidraw  on-demand
@@ -646,7 +646,7 @@ básico      + clasif.  Escucha    CPU/GPU/   generales   + matemáticas de vide
 
 ---
 
-## 🧠 Filosofía del Proyecto
+##  Filosofía del Proyecto
 
 1. **El LLM solo orquesta** — los scripts ejecutan todo. Control total de tokens.
 2. **Aprendizaje incremental** — cada versión construye sobre la anterior.
@@ -656,7 +656,7 @@ básico      + clasif.  Escucha    CPU/GPU/   generales   + matemáticas de vide
 
 ---
 
-## 📝 Notas de Implementación
+##  Notas de Implementación
 
 - **Agent Reach** ya está instalado (v1.5.0) — sirve para la búsqueda web del V4
 - **Strix** está instalado en WSL — para pentesting cuando haya servicios

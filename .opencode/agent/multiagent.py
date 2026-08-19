@@ -94,9 +94,11 @@ def build_agent_prompt(task_def: dict, mem: dict, round_num: int) -> str:
                 parts.append(f"expone: {api}")
             other_context.append("  " + " | ".join(parts))
 
-    ctx_str = "\n".join(other_context) if other_context else "  (nadie ha reportado aún)"
+    ctx_str = (
+        "\n".join(other_context) if other_context else "  (nadie ha reportado aún)"
+    )
 
-    return f"""Eres **{agent_name}** en el proyecto {mem.get('project', 'Yardis')}.
+    return f"""Eres **{agent_name}** en el proyecto {mem.get("project", "Yardis")}.
 
 ## Memoria compartida multi-agente
 
@@ -137,9 +139,9 @@ async def run_agent(
 
     start = time.time()
     if IS_WINDOWS:
-        cmd_str = subprocess.list2cmdline([
-            "opencode", "run", prompt_flat, "--agent", agent_name
-        ])
+        cmd_str = subprocess.list2cmdline(
+            ["opencode", "run", prompt_flat, "--agent", agent_name]
+        )
         proc = await asyncio.create_subprocess_shell(
             cmd_str,
             stdout=asyncio.subprocess.PIPE,
@@ -168,11 +170,13 @@ async def run_agent(
     mem = load_memory()
     if agent_name not in mem["agents"]:
         mem.setdefault("agents", {})[agent_name] = {"messages": [], "output": {}}
-    mem["agents"][agent_name].setdefault("messages", []).append({
-        "type": "completed" if proc.returncode == 0 else "failed",
-        "body": f"exit {proc.returncode}, {elapsed:.1f}s",
-        "ts": utcnow(),
-    })
+    mem["agents"][agent_name].setdefault("messages", []).append(
+        {
+            "type": "completed" if proc.returncode == 0 else "failed",
+            "body": f"exit {proc.returncode}, {elapsed:.1f}s",
+            "ts": utcnow(),
+        }
+    )
     if proc.returncode != 0:
         if mem["agents"][agent_name].get("status") != "completed":
             mem["agents"][agent_name]["status"] = "failed"
@@ -218,9 +222,9 @@ async def run_tasks(tasks: list[dict], parallel: int = 2) -> list[dict]:
                     print(f"    {t['id']} ({t['agent']}) espera: {blocker}")
             break
 
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         print(f"  Round {round_num}: {len(ready)} tareas — {len(remaining)} pendientes")
-        print(f"{'='*50}")
+        print(f"{'=' * 50}")
         for t in ready:
             print(f"  ▶ {t['agent']}: {t['prompt'][:70]}...")
 
@@ -235,13 +239,15 @@ async def run_tasks(tasks: list[dict], parallel: int = 2) -> list[dict]:
         results = await asyncio.gather(*[run_one(t) for t in ready])
 
         for agent_name, rc, elapsed, log_path in results:
-            icon = "✅" if rc == 0 else "❌"
+            icon = "[OK]" if rc == 0 else "[X]"
             print(f"  {icon} {agent_name}: {elapsed:.1f}s (exit {rc})")
-            all_results.append({
-                "agent": agent_name,
-                "returncode": rc,
-                "elapsed": round(elapsed, 1),
-            })
+            all_results.append(
+                {
+                    "agent": agent_name,
+                    "returncode": rc,
+                    "elapsed": round(elapsed, 1),
+                }
+            )
             for t in tasks:
                 if t["agent"] == agent_name and t["id"] in remaining:
                     completed.add(t["id"])
@@ -252,11 +258,11 @@ async def run_tasks(tasks: list[dict], parallel: int = 2) -> list[dict]:
 
     success = sum(1 for r in all_results if r["returncode"] == 0)
     total = len(all_results)
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print(f"  FINAL: {success}/{total} exitosas")
-    print(f"{'='*50}")
+    print(f"{'=' * 50}")
     for r in all_results:
-        icon = "✅" if r["returncode"] == 0 else "❌"
+        icon = "[OK]" if r["returncode"] == 0 else "[X]"
         print(f"  {icon} {r['agent']}: {r['elapsed']:.1f}s")
     print(f"\n  Memoria compartida: {MEMORY_FILE.resolve()}")
     print(f"  Logs: {LOGS_DIR.resolve()}")
@@ -268,13 +274,14 @@ def watch_memory(interval: float = 3.0, notify: bool = False) -> None:
     """Observa memory.json y notifica cambios de estado en los agentes."""
     sys.stdout.reconfigure(line_buffering=True)
     known: dict[str, tuple[str, int]] = {}
-    print(f"  👀 Observando {MEMORY_FILE.resolve()}", flush=True)
+    print(f"   Observando {MEMORY_FILE.resolve()}", flush=True)
     print(f"  Presiona Ctrl+C para salir\n", flush=True)
 
     if notify and IS_WINDOWS:
         try:
             import winrt.windows.ui.notifications as notifications  # type: ignore
             from winrt.windows.data.xml.dom import XmlDocument  # type: ignore
+
             _toast = notifications.ToastNotificationManager.create_toast_notifier()
         except ImportError:
             notify = False
@@ -319,7 +326,12 @@ def watch_memory(interval: float = 3.0, notify: bool = False) -> None:
                             ts = last.get("ts", "")
                             if not elapsed and ts:
                                 elapsed = ts[-8:] if len(ts) >= 8 else ts
-                    icon = {"running": "▶", "completed": "✅", "failed": "❌", "pending": "⏳"}
+                    icon = {
+                        "running": "[>]",
+                        "completed": "[OK]",
+                        "failed": "[X]",
+                        "pending": "[..]",
+                    }
                     line = f"  {icon.get(status, '?')} {name}: {status}"
                     if elapsed:
                         line += f" ({elapsed})"
@@ -333,7 +345,7 @@ def watch_memory(interval: float = 3.0, notify: bool = False) -> None:
                     _notify(f"Multiagent: {name}", f"{status}: {task[:80]}")
                     known[name] = (status, msgs)
     except KeyboardInterrupt:
-        print("\n  👋 Observador detenido", flush=True)
+        print("\n   Observador detenido", flush=True)
 
 
 def parse_args() -> argparse.Namespace:
@@ -341,29 +353,32 @@ def parse_args() -> argparse.Namespace:
         description="OpenCode multi-agent orchestrator with shared memory"
     )
     parser.add_argument("file", nargs="?", help="JSON file with task list")
-    parser.add_argument(
-        "--pipe", action="store_true", help="Read task list from stdin"
-    )
+    parser.add_argument("--pipe", action="store_true", help="Read task list from stdin")
     parser.add_argument(
         "--parallel", type=int, default=2, help="Max agents to run simultaneously"
     )
     parser.add_argument("--agent", help="Single agent name (quick mode)")
     parser.add_argument("--prompt", help="Single agent prompt (quick mode)")
     parser.add_argument(
-        "--detach", action="store_true",
-        help="Lanzar en background y devolver el control inmediatamente"
+        "--detach",
+        action="store_true",
+        help="Lanzar en background y devolver el control inmediatamente",
     )
     parser.add_argument(
-        "--watch", action="store_true",
-        help="Observar memory.json y notificar cambios en vivo"
+        "--watch",
+        action="store_true",
+        help="Observar memory.json y notificar cambios en vivo",
     )
     parser.add_argument(
-        "--notify", action="store_true",
-        help="Enviar notificación del sistema en cambios (Windows Toast)"
+        "--notify",
+        action="store_true",
+        help="Enviar notificación del sistema en cambios (Windows Toast)",
     )
     parser.add_argument(
-        "--interval", type=float, default=3.0,
-        help="Intervalo de polling en segundos (default: 3)"
+        "--interval",
+        type=float,
+        default=3.0,
+        help="Intervalo de polling en segundos (default: 3)",
     )
     return parser.parse_args()
 
@@ -394,13 +409,15 @@ def launch_detached(file_path: Path) -> None:
         proc = subprocess.Popen(
             cmd,
             creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NO_WINDOW,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
     else:
         proc = subprocess.Popen(
             cmd,
             start_new_session=True,
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
         )
     print(f"  → Background task PID {proc.pid}")
     print(f"  → Resultados en {MEMORY_FILE.resolve()}")
@@ -413,10 +430,17 @@ def main() -> None:
         watch_memory(interval=args.interval, notify=args.notify)
         return
 
-    # ⚡ Fast path: single agent → run-agent.py (sin DAGs, rounds, deadlock)
+    # Fast path: single agent -> run-agent.py (sin DAGs, rounds, deadlock)
     if args.agent and args.prompt:
         runner = Path(__file__).parent / "run-agent.py"
-        cmd = [sys.executable, str(runner), "--agent", args.agent, "--prompt", args.prompt]
+        cmd = [
+            sys.executable,
+            str(runner),
+            "--agent",
+            args.agent,
+            "--prompt",
+            args.prompt,
+        ]
         if args.detach:
             cmd.append("--detach")
             subprocess.Popen(
@@ -467,10 +491,16 @@ def main() -> None:
         ensure_dirs()
         task_file = SHARED_DIR / "_detach_tasks.json"
         task_file.write_text(
-            json.dumps({"project": os.environ.get("MULTIAGENT_PROJECT", "Yardis"),
-                        "parallel": parallel, "tasks": task_list},
-                       indent=2, ensure_ascii=False),
-            encoding="utf-8"
+            json.dumps(
+                {
+                    "project": os.environ.get("MULTIAGENT_PROJECT", "Yardis"),
+                    "parallel": parallel,
+                    "tasks": task_list,
+                },
+                indent=2,
+                ensure_ascii=False,
+            ),
+            encoding="utf-8",
         )
         launch_detached(task_file)
         return

@@ -9,14 +9,23 @@ dependencies = [
     "fastapi>=0.136.3",
     "faster-whisper>=1.2.1",
     "noisereduce>=3.0.3",
+    "ntplib>=0.4.0",
     "numpy>=2.4.6",
+    "onnxruntime>=1.26.0",
     "openwakeword>=0.4.0",
+    "piper-tts>=1.3.0",
+    "psutil>=6.0.0",
+    "pywin32>=308",
     "pyttsx3>=2.98",
+    "sentence-transformers==2.7.0",
     "sounddevice>=0.5.5",
+    "soundfile>=0.14.0",
+    "spacy>=3.8.14",
     "tiktoken>=0.9.0",
     "torch>=2.12.0",
     "uvicorn>=0.48.0",
     "websockets>=16.0",
+    "yt-dlp>=2026.6.9",
 ]
 
 [dependency-groups]

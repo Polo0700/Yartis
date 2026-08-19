@@ -14,8 +14,19 @@ class Transcribir:
         )
 
     def transcripcion(self):
+        import time as _time
+
+        t0 = _time.time()
         microfono = Audio_Work()
         microfono.startMic()
+        print(f"  [>] Grabacion: {_time.time() - t0:.1f}s", flush=True)
+        if microfono.audio is None:
+            print("  [X] Audio es None!", flush=True)
+            return ""
+        print(
+            f"  [>] Audio shape: {microfono.audio.shape}, len: {len(microfono.audio)}",
+            flush=True,
+        )
 
         segmento, info = self.transcriptor.transcribe(
             audio=microfono.audio,
@@ -24,4 +35,8 @@ class Transcribir:
             word_timestamps=True,
         )
         textof = " ".join(valor.text for valor in segmento)
+        print(
+            f"  [>] Transcrito: '{textof[:80]}' (en {_time.time() - t0:.1f}s)",
+            flush=True,
+        )
         return textof

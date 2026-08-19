@@ -70,16 +70,16 @@ cd core/src-tauri && cargo audit
 ```markdown
 ## Security Audit Report
 
-### Critical 🔴
+### Critical 
 1. **[File:Line]** Vulnerability — fix immediately
 
-### High 🟠
+### High 
 1. **[File:Line]** — address soon
 
-### Medium 🟡
+### Medium 
 1. **[File:Line]** — should fix
 
-### Low 🟢
+### Low 
 1. **[File:Line]** — consider improving
 
 ### Dependencies

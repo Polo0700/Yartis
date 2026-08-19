@@ -253,7 +253,7 @@ Invoked by python-expert for:
 ### Summary
 [Brief overall assessment - 1-2 sentences]
 
-### Critical Issues 🔴
+### Critical Issues 
 Issues that must be fixed before merge:
 
 1. **[file.py:42]** SQL injection vulnerability
@@ -267,19 +267,19 @@ Issues that must be fixed before merge:
    cursor.execute("SELECT * FROM users WHERE id = $1", [user_id])
    \`\`\`
 
-### Warnings 🟡
+### Warnings 
 Issues that should be addressed:
 
 1. **[file.py:15]** Missing type hints
    - Recommendation: Add type annotations for better IDE support
 
-### Suggestions 🟢
+### Suggestions 
 Optional improvements:
 
 1. **[file.py:30]** Consider using dataclass
    - Benefit: Reduces boilerplate, adds __eq__, __repr__
 
-### Positive Notes ✅
+### Positive Notes 
 What's done well:
 
 - Good use of type hints
@@ -697,10 +697,10 @@ grep("def test_", include="*.py")
 | Feature | python-coder | python-reviewer | python-tester | python-scout |
 |---------|--------------|-----------------|---------------|--------------|
 | Type | general | general | general | explore |
-| Write files | ✓ | ✗ | ✓ | ✗ |
-| Edit files | ✓ | ✗ | ✓ | ✗ |
-| Bash commands | ✓ | ✗ | ✓ | ✗ |
-| Load skills | ✓ | ✗ | ✓ | ✗ |
+| Write files |  |  |  |  |
+| Edit files |  |  |  |  |
+| Bash commands |  |  |  |  |
+| Load skills |  |  |  |  |
 | Primary use | Implementation | Review | Testing | Discovery |
 
 ---

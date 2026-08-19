@@ -1,4 +1,4 @@
-# 🧠 Lógica de la IA — Yartis
+#  Lógica de la IA — Yartis
 
 Este archivo registra el razonamiento detrás de cada decisión técnica, orden de los pasos,
 y el estado actual del pensamiento. Sirve para que en la siguiente sesión la IA sepa
@@ -92,7 +92,7 @@ Python: wake word + grabación + whisper + opencode → WebSocket → Rust → e
 
 ### RASTRECK.md — Racha de código
 - **Racha por proyecto**: Cada proyecto tiene su propio RASTRECK.md en su raíz.
-- **Días consecutivos**: Si el usuario programa un día, suma ⭐. Si falta un día, reinicia.
+- **Días consecutivos**: Si el usuario programa un día, suma . Si falta un día, reinicia.
 - Propósito: motivación y registro de avance. No es métrica de productividad, es
   registro de consistencia.
 
@@ -113,7 +113,7 @@ Python: wake word + grabación + whisper + opencode → WebSocket → Rust → e
 
 ---
 
-## 🌍 Reglas Globales de Trabajo
+##  Reglas Globales de Trabajo
 
 Estas reglas aplican a TODOS los agentes del sistema (planeador, python-expert, rust-expert, typescript-expert, etc.).
 
@@ -175,9 +175,9 @@ Fecha: 09-Jun-2026 ~4:00 AM
 
 ## Próximas sesiones — hoja de ruta
 
-1. **🔗 Conectar React** → `listen("mensaje")` en Start.tsx
-2. **🧪 Probar pipeline** → Python server + cargo tauri dev
-3. **📝 README.md** → Descripción del proyecto
-4. **🎤 Wake word custom** → Grabar samples + entrenar
-5. **🤖 Agente Yardis** → `.opencode/agent/yardis.md`
-6. **💬 Comentar código** → Documentación inline
+1. ** Conectar React** → `listen("mensaje")` en Start.tsx
+2. ** Probar pipeline** → Python server + cargo tauri dev
+3. ** README.md** → Descripción del proyecto
+4. ** Wake word custom** → Grabar samples + entrenar
+5. ** Agente Yardis** → `.opencode/agent/yardis.md`
+6. ** Comentar código** → Documentación inline

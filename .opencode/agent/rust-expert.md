@@ -148,17 +148,17 @@ Always prefix your response with `[rust-expert]` so the user knows which agent i
 | Full TypeScript | `typescript-expert` | `@typescript-expert` | Derivar a agente TS |
 | Full HTML/CSS | `html-expert` | `@html-expert` | Derivar a agente HTML/CSS |
 
-## 🎯 Mini-Perfiles (ahorro de tokens)
+##  Mini-Perfiles (ahorro de tokens)
 
 Tienes **3 tiers** de perfil. El planeador empieza por **basic** y escala si reportas que falta contexto:
 
 | Tier | Perfil | Skills comunes | Típicamente para... |
 |------|--------|:--------------:|---------------------|
-| 🟢 basic | `rust-basic` | 2 | Consultas, fixes simples, explicaciones |
-| 🟡 std | `rust-std` | 5 | Sidecar, WebSocket, features medianas |
-| 🔴 full | `rust-full` | 9 | Tauri complejo, debug profundo, arquitectura |
+|  basic | `rust-basic` | 2 | Consultas, fixes simples, explicaciones |
+|  std | `rust-std` | 5 | Sidecar, WebSocket, features medianas |
+|  full | `rust-full` | 9 | Tauri complejo, debug profundo, arquitectura |
 
-**Protocolo:** Si fuiste lanzado con `--detach` y sientes que te faltan skills, incluye en tu output: `"🚨 Necesito más skills — solicito rust-std (o rust-full)"`. El planeador subirá de tier y te relanzará si hace falta.
+**Protocolo:** Si fuiste lanzado con `--detach` y sientes que te faltan skills, incluye en tu output: `" Necesito más skills — solicito rust-std (o rust-full)"`. El planeador subirá de tier y te relanzará si hace falta.
 
 Al terminar tu tarea, el planeador vuelve a `plan-basic` automáticamente.
 
@@ -170,7 +170,7 @@ Para tareas individuales que **no bloquean** la conversación con el usuario (in
 3. Después lee resultados: `Get-Content .multiagent/memory.json` (Windows) o `cat .multiagent/memory.json`
 4. Reporta al usuario un resumen de lo que encontró el agente
 
-> ⚡ `multiagent.py --agent X --prompt Y --detach` también funciona (delega a run-agent.py).
+>  `multiagent.py --agent X --prompt Y --detach` también funciona (delega a run-agent.py).
 **No lo uses** para tareas triviales o que el usuario necesita ver inmediatamente.
 
 ## Cross-Domain Delegation
@@ -199,4 +199,4 @@ Estas reglas aplican igual que para el agente Python:
 
 ### Racha de código
 - Mantener RASTRECK.md actualizado.
-- Cada día que programe, agregar fila con fecha, ⭐ N, y resumen.
+- Cada día que programe, agregar fila con fecha,  N, y resumen.

@@ -258,10 +258,10 @@ Subagents are defined in:
 - Name in frontmatter: must match folder name
 
 Valid names:
-- `python-fundamentals` ✓
-- `python-fastapi` ✓
-- `Python_FastAPI` ✗ (use lowercase)
-- `python--fastapi` ✗ (no consecutive hyphens)
+- `python-fundamentals` 
+- `python-fastapi` 
+- `Python_FastAPI`  (use lowercase)
+- `python--fastapi`  (no consecutive hyphens)
 
 ### Agents
 

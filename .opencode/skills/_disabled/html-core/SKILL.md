@@ -61,7 +61,7 @@ description: HTML5 semantic markup, accessibility (ARIA/WCAG), SEO, forms, and b
 ### Keyboard Navigation
 ```html
 <!-- All interactive elements must be focusable -->
-<button aria-label="Activar micrófono">🎤</button>
+<button aria-label="Activar micrófono"></button>
 
 <!-- Tab order follows visual order -->
 <!-- Use tabindex="0" to add to tab order -->
@@ -100,8 +100,8 @@ description: HTML5 semantic markup, accessibility (ARIA/WCAG), SEO, forms, and b
 
   <!-- Controls -->
   <footer role="toolbar" aria-label="Controls">
-    <button aria-label="Activar" id="mic-btn">🎤</button>
-    <button aria-label="Configuración" id="settings-btn">⚙️</button>
+    <button aria-label="Activar" id="mic-btn"></button>
+    <button aria-label="Configuración" id="settings-btn"></button>
   </footer>
 </div>
 ```

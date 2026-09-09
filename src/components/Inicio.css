@@ -1,0 +1,177 @@
+.inicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  gap: 24px;
+  padding: 40px 40px 20px 40px;
+  background: var(--bg);
+  overflow-y: auto;
+  transition: background-color 0.3s;
+}
+
+.inicio-logo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--btn-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--btn-text);
+  font-family: sans-serif;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.inicio-logo::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: #22c55e;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+}
+
+.inicio-titulo {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  text-align: center;
+}
+
+.inicio-card {
+  width: 100%;
+  max-width: 500px;
+  background: #eef4fb;
+  border-radius: 12px;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(56, 153, 248, 0.1);
+  transition:
+    background-color 0.3s,
+    box-shadow 0.3s;
+}
+
+.inicio-card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inicio-card-icon {
+  font-size: 18px;
+}
+
+.inicio-card code {
+  font-family: "Inter", monospace;
+  font-size: 12px;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+body.dark-mode .inicio-card code {
+  background: #0c4a6e;
+  color: #7dd3fc;
+}
+
+body.dark-mode .inicio-card {
+  background: #1e293b;
+}
+
+.inicio-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+}
+
+.inicio-card ul {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.8;
+  font-family: "Inter", sans-serif;
+}
+
+.inicio-footer {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 8px 0 20px 0;
+  font-family: "Inter", sans-serif;
+}
+.bar-input::placeholder {
+  text-align: center;
+  color: black;
+  font-size: 22px;
+}
+.bar-input {
+  width: 470px;
+  height: 80px;
+  color: black;
+  border-radius: 40px;
+  font-size: 22px;
+}
+.start {
+  margin: 0;
+  padding-bottom: 20px;
+}
+.start-text {
+  color: color-mix(gray, black);
+  text-align: center;
+  font-size: 40px;
+  padding-bottom: 30px;
+  background-color: gray;
+  border-radius: 30px;
+  width: 560px;
+  height: 20px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  border: black solid 2px;
+}
+.answer {
+  background-color: #0c4a6e;
+  height: 300px;
+  margin-bottom: 40px;
+  border-radius: 10px;
+  border: black solid 2px;
+  margin-left: 0;
+  width: 580px;
+}
+.answer-text {
+  font-size: 30px;
+  padding-left: 15px;
+  padding-top: 20px;
+}
+.desactivate {
+  display: none;
+}
+.btn-input-inicio {
+  background-image: url("/src/assets/enviar.svg");
+  width: 85px;
+  height: 90px;
+  border-radius: 100px;
+  background-position: center; /* Centra la imagen */
+  background-repeat: no-repeat;
+  background-size: 110%;
+  color: transparent;
+  margin-left: 25px;
+}

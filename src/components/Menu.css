@@ -1,0 +1,244 @@
+:root {
+  --bg: #e8e8e8;
+  --menu-bg: #3a3a3a;
+  --card-bg: #fff;
+  --btn-bg: #555;
+  --btn-text: #fff;
+  --activo-bg: #fff;
+  --activo-text: #333;
+  --text: #1a1a1a;
+  --text-secondary: #555;
+  --text-muted: #888;
+  --flecha: #d0d0d0;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --input-bg: #fff;
+  --input-border: #ccc;
+}
+body.dark-mode {
+  --bg: #1a1a1a;
+  --menu-bg: #111;
+  --card-bg: #2a2a2a;
+  --btn-bg: #444;
+  --btn-text: #e0e0e0;
+  --activo-bg: #555;
+  --activo-text: #fff;
+  --text: #e0e0e0;
+  --text-secondary: #aaa;
+  --text-muted: #666;
+  --flecha: #888;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --input-bg: #333;
+  --input-border: #555;
+}
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  transition: background-color 0.3s;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/InterVariable.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Inter-Italic";
+  src: url("./assets/fonts/InterVariable-Italic.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+.menu {
+  margin: 0;
+  background-color: var(--menu-bg);
+  padding-top: 4px;
+  padding-right: 60px;
+  padding-bottom: 20px;
+  text-align: justify;
+  justify-content: space-between;
+  display: flex;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: background-color 0.3s;
+}
+.menu-list {
+  list-style: none;
+  margin: 0;
+  display: flex;
+  gap: 40px;
+  font-size: 30px;
+  padding-top: 14px;
+  padding-left: 20px;
+}
+.menu-list2 {
+  list-style: none;
+  margin: 0;
+  display: flex;
+  gap: 40px;
+  font-size: 30px;
+  padding-top: 14px;
+  padding-left: 20px;
+}
+.menu-list li {
+  animation: entrada 0.8s ease both;
+}
+.menu-list2 li {
+  animation: entrada 0.8s ease both;
+}
+.menu-list li:nth-child(1) {
+  animation-delay: 0s;
+}
+.menu-list li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.menu-list li:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.menu-list li:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.menu-list2 li:nth-child(1) {
+  animation-delay: 0s;
+}
+.menu-list2 li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.menu-list2 li:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.menu-list2 li:nth-child(4) {
+  animation-delay: 0.3s;
+}
+@keyframes salir {
+  to {
+    transform: translate(10000px);
+    opacity: 0;
+  }
+}
+@keyframes entrada {
+  0% {
+    opacity: 0;
+    transform: translate(500px);
+  }
+  100% {
+    transform: translate(-10);
+    opacity: 1;
+  }
+}
+@keyframes entrarflecha {
+  0% {
+    transform: scaleX(-1) translateX(-1000px);
+    padding-left: 0;
+  }
+  1% {
+    transform:
+      scaleX(-1) translateY(30px),
+      translateX(10px);
+    padding-left: 0;
+  }
+  20% {
+    transform: scaleX(-1) translateY(10px) translateX(10px);
+    padding-left: 0;
+  }
+  25% {
+    transform: scaleX(-1) translateY(-10px);
+    padding-left: 0;
+  }
+  26% {
+    transform: scaleX(-1) translateY(-10px);
+    padding-left: 0;
+  }
+  30% {
+    transform: scaleX(-1) translateX(-10px);
+    padding-left: 5px;
+  }
+  40% {
+    transform: scaleX(-1) translateX(-10px);
+    padding-left: 5px;
+  }
+  50% {
+    transform: scaleX(-1) translateX(-10px);
+    padding-left: 5px;
+  }
+  60% {
+    transform: scaleX(-1) translateX(-10px);
+    padding-left: 5px;
+  }
+  70% {
+    transform: scaleX(-1) translateX(-10px);
+    padding-left: 5px;
+  }
+  99% {
+    transform: scaleX(1) translateX(0);
+    padding-left: 10px;
+  }
+  100% {
+    transform: scaleX(1) translateX(-10px);
+    padding-left: 20px;
+  }
+}
+
+.salida li {
+  animation: salir 4.5s ease both;
+}
+.salida li:nth-child(1) {
+  animation-delay: 0s;
+}
+.salida li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.salida li:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+}
+.principal {
+  animation: muro 2s ease both;
+  pointer-events: none;
+}
+.imgAjustes {
+  padding-top: 5px;
+}
+.icono {
+  width: 65px;
+  height: 58px;
+  animation: entrarflecha 1.1s ease both;
+  padding: 10px;
+  will-change: transform;
+  image-rendering: optimizeQuality;
+}
+.icono.salida {
+  width: 65px;
+  height: 58px;
+  animation: salir 3s ease both;
+}
+.botonesSecundarios {
+  background-color: var(--btn-bg);
+  font-size: 26px;
+  width: min-content;
+  padding: 10px;
+  font-family: "Inter";
+  border-radius: 30px;
+  border: none;
+  color: var(--btn-text);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+.activo {
+  background-color: var(--activo-bg);
+  color: var(--activo-text);
+}
+.botonesSecundarios:hover {
+  height: 65px;
+  font-size: 30px;
+  color: #9fc3da;
+}

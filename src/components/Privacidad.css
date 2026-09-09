@@ -1,0 +1,76 @@
+.privacidad {
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.privacidad h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+.privacidad > p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 20px 0;
+  font-family: "Inter", sans-serif;
+}
+
+.privacidad-card {
+  background: #eef4fb;
+  border-radius: 12px;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(56, 153, 248, 0.1);
+  margin-bottom: 16px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .privacidad-card {
+  background: #1e293b;
+}
+
+.privacidad-card h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+.privacidad-card ul {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.8;
+  font-family: "Inter", sans-serif;
+}
+
+.privacidad-card p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  font-family: "Inter", sans-serif;
+}
+
+.privacidad button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-right: 8px;
+  margin-top: 16px;
+}
+
+.privacidad button:hover {
+  opacity: 0.85;
+}

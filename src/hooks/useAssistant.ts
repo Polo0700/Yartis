@@ -4,7 +4,7 @@ import { listen } from "@tauri-apps/api/event";
 export function useAssistant() {
   const [textoRecibido, textoRecibidoSet] = useState("");
   useEffect(() => {
-    const cambio = listen<string>("mensaje", (callback) => {
+    const cambio = listen<string>("message", (callback) => {
       console.log(callback.payload);
       const texto = callback.payload;
       textoRecibidoSet(texto);

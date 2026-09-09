@@ -1,0 +1,70 @@
+flowchart TD
+    %% ============ CAPA PYTHON (Motor) ============
+    subgraph PYTHON["🐍 Capa Python — Motor"]
+        Y[<b>yartis.py</b><br/>Loop principal + WebSocket client]
+        WAKE[<b>core/wake.py</b><br/>Wake word "yartis"]
+        TRANS[<b>core/transcriber.py</b><br/>faster-whisper STT]
+        AUDIO[<b>core/audio.py</b><br/>Grabación + ruido]
+        CONF[<b>core/config.py</b><br/>Configuración]
+        SRV[<b>core/server.py</b><br/>WS Server → OpenCode]
+        OPC[<b>brain/opencode.py</b><br/>Cerebro → OpenCode]
+        CONTEXT[<b>brain/context.py</b><br/>Contexto]
+        VOICE[<b>brain/voice_id.py</b><br/>ID de voz]
+        CONFIRM[<b>brain/confirmacion.py</b><br/>Confirmación]
+        MUSIC[<b>servicios/musica.py</b><br/>Música]
+    end
+
+    %% ============ CAPA TAURI / RUST ============
+    subgraph RUST["🦀 Capa Rust — Tauri (Orquestador)"]
+        LIB[<b>src-tauri/src/lib.rs</b><br/>Puente WS → emit("message")]
+        MAINRS[<b>src-tauri/src/main.rs</b>]
+    end
+
+    %% ============ CAPA REACT ============
+    subgraph REACT["⚛️ Capa React — UI"]
+        MAIN[<b>src/main.tsx</b>]
+        APP[<b>src/App.tsx</b>]
+        HOOK[<b>src/hooks/useAssistant.ts</b>]
+        MENU[<b>components/Menu.tsx</b>]
+        DYN[<b>components/DynamicBody.tsx</b>]
+        VIEWS[<b>Vistas:</b><br/>Inicio · Ajustes · Acerca ·<br/>Ayuda · Reportes · Modelos ·<br/>Privacidad · InitialSettings]
+        STATUS[<b>components/StatusIndicator.tsx</b>]
+        CHSIZE[<b>components/ChangeSize.tsx</b>]
+    end
+
+    %% ==== Conexiones Python ====
+    Y --> WAKE
+    Y --> OPC
+    OPC --> TRANS
+    OPC --> MUSIC
+    CONFIRM --> AUDIO
+    CONFIRM --> TRANS
+    SRV --> OPC
+    TRANS --> AUDIO
+
+    %% ==== Puente Rust ====
+    LIB <--> SRV
+    MAINRS --> LIB
+
+    %% ==== React ====
+    MAIN --> APP
+    APP --> HOOK
+    APP --> DYN
+    APP --> STATUS
+    APP --> CHSIZE
+    MENU --> DYN
+    DYN --> VIEWS
+
+    %% ==== Puente Tauri → React ====
+    LIB -. "mensaje WS → WebView" .-> APP
+
+    %% ==== Estilos ====
+    classDef py fill:#2e5a87,stroke:#88c0ff,color:#fff
+    classDef rust fill:#b7410e,stroke:#ff9a5c,color:#fff
+    classDef react fill:#3a7d44,stroke:#8ce99a,color:#fff
+    classDef views fill:#5c5c8a,stroke:#b0b0ff,color:#fff
+
+    class Y,WAKE,TRANS,AUDIO,CONF,SRV,OPC,CONTEXT,VOICE,CONFIRM,MUSIC py
+    class LIB,MAINRS rust
+    class MAIN,APP,HOOK,MENU,DYN,STATUS,CHSIZE react
+    class VIEWS views

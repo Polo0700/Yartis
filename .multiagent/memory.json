@@ -1,12 +1,4 @@
 {
   "project": "Yardis",
-  "agents": {
-    "general": {
-      "status": "running",
-      "task": "INVESTIGA sobre comida asiatica. Origenes, ingredientes clave, platos tipicos por region (China, Japon, Corea, Tailandia",
-      "messages": [],
-      "output": {},
-      "round": 1
-    }
-  }
+  "agents": {}
 }

@@ -1,0 +1,122 @@
+.ajustes {
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.ajustes h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+.ajustes-section {
+  background: #eef4fb;
+  border-radius: 12px;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(56, 153, 248, 0.1);
+  margin-bottom: 16px;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .ajustes-section {
+  background: #1e293b;
+}
+
+.ajustes-section h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+.ajustes label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: "Inter", sans-serif;
+  margin-bottom: 12px;
+}
+
+.ajustes input[type="range"] {
+  width: 100%;
+  max-width: 250px;
+}
+
+.ajustes input[type="text"],
+.ajustes input[type="password"],
+.ajustes select {
+  padding: 8px 12px;
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  background: var(--input-bg);
+  color: var(--text);
+  max-width: 300px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.ajustes button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: "Inter", sans-serif;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+
+.ajustes button:hover {
+  opacity: 0.85;
+}
+
+.ajustes p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+  font-family: "Inter", sans-serif;
+}
+
+.ajustes-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.ajustes-toggle-switch {
+  width: 48px;
+  height: 26px;
+  background: var(--btn-bg);
+  border-radius: 13px;
+  position: relative;
+  transition: background 0.3s;
+  flex-shrink: 0;
+}
+
+.ajustes-toggle-switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--card-bg);
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+body.dark-mode .ajustes-toggle-switch::after {
+  transform: translateX(22px);
+}

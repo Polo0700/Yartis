@@ -1,15 +1,20 @@
 use aes_gcm::aead::generic_array::GenericArray;
-use tokio_tungstenite::connect_async;
-use  tauri::{AppHandle,Emitter};
-use tokio::spawn;
-use std::fmt::format;
+use futures_util::stream::SplitSink;
+use std::sync::Arc;
+use tokio::sync::Mutex;
+use tokio_tungstenite::tungstenite::Message;
+use tokio_tungstenite::{MaybeTlsStream, WebSocketStream, connect_async};
 use std::path::Path;
 use std::io::{BufRead, BufReader, Write};
 use std::process::{Command, Stdio};
 use aes_gcm::{aead::{Aead, KeyInit}, Aes256Gcm};
-use futures_util::StreamExt;
+use futures_util::{SinkExt, StreamExt};
 use rand::RngCore;
 use std::fs::File;
+use tokio::net::TcpStream;
+use futures_util::stream::SplitStream;
+use tauri::{Emitter, Manager};
+use tokio::time::{sleep, Duration};
 use argon2::{
   password_hash::{
     rand_core::OsRng,
@@ -20,7 +25,7 @@ use argon2::{
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![ping, inicio])
+    .invoke_handler(tauri::generate_handler![ping, enviar_msg])
     .plugin(tauri_plugin_shell::init())
     .plugin(tauri_plugin_os::init())
     .setup(|app| {
@@ -77,35 +82,78 @@ pub fn run() {
             .build(),
         )?;
       }
+      let handle = app.handle().clone();
+      tauri::async_runtime::spawn(async move {
+        // tomar la conexion 
+        let connect = loop { 
+          match connection(handle.clone()).await{ 
+            Ok(con) => break con,
+            Err(e) => {
+              eprint!("cannot connect {}, we are retrying",e);
+              sleep(Duration::from_secs(1)).await;
+            }
+          }
+        };
+        let connect = Arc::new(Mutex::new(connect));
+        handle.manage(connect.clone());
+
+        loop {
+          let mut c = connect.lock().await;
+          c.get().await;
+        }
+      });
       Ok(())
+      // darle un espacio
+      // abrirla usando connection
+      // -para abrir la connection ocupo llamar la funcion de connection
+      // -despues ya es todo pq la funcion por si sola ya hace las conexiones y las guarda en el struct
     })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
 }
+type WsSink = SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>;
+type WsStream = SplitStream<WebSocketStream<MaybeTlsStream<TcpStream>>>;
+struct Connect {
+  escritura: WsSink, 
+  lectura: WsStream,
+  handle: tauri::AppHandle,
+}
+  async fn connection(handle: tauri::AppHandle)->Result<Connect, String>{
+    let connection = match connect_async("ws://localhost:8765").await{
+      Ok((con,_res) ) => con,
+      Err(e) => return Err(format!("cannot connec: {}",e)),
+    };
+    let (send, get) = connection.split();
+    Ok(Connect{
+      escritura: send, 
+      lectura: get,
+      handle: handle,
+    })
+  }
 #[tauri::command]
 fn ping() -> String {
   "pong".to_string()
 }
-#[tauri::command]
-async fn inicio(obj : AppHandle)-> Result<(), String>{
-  spawn(async move{
-    if let  Ok((stream, _)) =  connect_async("ws://localhost:8765").await{
-      let (_escritura, mut lectura) = stream.split();
-      while let Some(Ok(msg)) = lectura.next().await{
-        match msg.to_text(){
+impl Connect {
 
-          Ok( texto)=>{
-            if let Err(error_emitir) = obj.emit("mensaje", texto) {
-              eprintln!("fallo al emitir {error_emitir}")
-            }
-          },
-          Err(e) => {
-            eprint!("Error en rust{e}")
-          }
+  async fn send(&mut self, msg:Message)-> Result<(), String>{
+    self.escritura.send(msg).await.map_err(|e| format!("Error al enviar mensaje: {}", e))
+  }
+  async fn get(&mut self){
+    while let Some(msg) = self.lectura.next().await{
+      if let Ok(Message::Text(texto)) = msg {
+        let texto_string = texto.to_string();
+        if let Err(e) = self.handle.emit("message", texto_string){
+          eprint!("Error al enviar mensaje: {}",e);
         }
       }
     }
-    });
+  }
+}
+#[tauri::command]
+async fn enviar_msg(estado: tauri::State<'_, Arc<Mutex<Connect>>>, msg: String) -> Result<(), String> {
+  let mut envio = estado.lock().await;
+  envio.send(Message::Text(msg.into())).await.map_err(|e| format!("Error al enviar mensaje: {}", e))?;
   Ok(())
 }
 struct SecYar{

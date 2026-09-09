@@ -1,0 +1,61 @@
+.reportes {
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.reportes h1 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+}
+
+.reportes > p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0 0 20px 0;
+  font-family: "Inter", sans-serif;
+}
+
+.reportes-card {
+  background: #eef4fb;
+  border-radius: 12px;
+  padding: 20px;
+  border: none;
+  box-shadow: 0 2px 12px rgba(56, 153, 248, 0.1);
+  overflow-x: auto;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .reportes-card {
+  background: #1e293b;
+}
+
+.reportes table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Inter", sans-serif;
+}
+
+.reportes th {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--input-border);
+}
+
+.reportes td {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--input-border);
+}
+
+.reportes .empty {
+  color: var(--text-muted);
+  font-style: italic;
+}

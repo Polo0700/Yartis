@@ -2,9 +2,9 @@
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "yartis",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "com.yartis.app",
   "build": {
-    "frontendDist": "../build",
+    "frontendDist": "../dist",
     "devUrl": "http://localhost:3000",
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
@@ -12,17 +12,35 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "yartis",
         "width": 800,
         "height": 600,
         "resizable": true,
         "fullscreen": false,
-        "decorations": false
+        "decorations": false,
+        "visible": true,
+        "url": "/"
+      },
+      {
+        "label": "panel",
+        "title": "Configuracion",
+        "width": 1080,
+        "height": 800,
+        "resizable": true,
+        "decorations": false,
+        "url": "/settings.html"
       }
     ],
     "security": {
       "csp": null
     }
+  },
+  "plugins": {
+    "shell": {
+      "open": true
+    },
+    "os": {}
   },
   "bundle": {
     "active": true,

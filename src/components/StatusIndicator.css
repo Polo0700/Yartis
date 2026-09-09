@@ -38,6 +38,16 @@
   animation-delay: 1.2s;
 }
 
+/* ─── unworking (sin trigger / quieto) ─── */
+.status-indicator.unworking .circle {
+  background: #333;
+}
+.status-indicator.unworking .wave {
+  border-color: #333;
+  animation: none;
+  box-shadow: none;
+}
+
 /* ─── wait ─── */
 .status-indicator.wait .circle {
   background: #555;

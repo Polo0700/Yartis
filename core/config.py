@@ -10,17 +10,17 @@ WHISPER_DEVICE = "cpu"
 WHISPER_COMPUTE = "int8"
 WHISPER_BEAM = 5
 
-UMBRAL_SILENCIO = 200
+UMBRAL_SILENCIO = 50
 PASOS_SILENCIO_LIMITE = 35
 SEGUNDOS_POST_SILENCIO = 5
 
 # OpenWakeWord
-WAKE_WORD = "YARTIS"  # nombre del modelo de wake word
+WAKE_WORD = "yartis"  # nombre del modelo de wake word
 WAKE_FRAME = 1280  # samples por frame (OpenWakeWord requiere 1280)
 WAKE_THRESHOLD = 0.3  # sensibilidad (0-1, más alto = menos falsos positivos)
 WAKE_MODEL_PATH = str(Path(__file__).parent / "models" / "yartis.onnx")
 
-DEBUG = False  # True = muestra scores de audio (para verificar señal)
+DEBUG = True  # True = muestra scores de audio (para verificar señal)
 
 # Candidatos para wake word personalizada:
 # - Kalt (alemán, una sílaba, K+L+T)

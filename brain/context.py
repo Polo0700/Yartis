@@ -1,5 +1,6 @@
-import tiktoken
 import datetime
+
+import tiktoken
 
 
 class Registro:
@@ -17,7 +18,9 @@ class Registro:
         )
 
         self.NUM += len(self.enc.encode(RES_IA) + self.enc.encode(RES_USUARIO))
-        if self.NUM >= self.TOKENS_MAX:
+        while self.NUM >= self.TOKENS_MAX:
+            if len(self.HISTORIAL_IA) <= 0 and len(self.HISTORIAL_USUARIO) <= 0:
+                break
             self.NUM -= self.TOKENS_USADOS[0]
             ia = self.HISTORIAL_IA.pop(0)
             usuario = self.HISTORIAL_USUARIO.pop(0)
@@ -31,7 +34,6 @@ class Registro:
                 f.write(resultado + "\n")
             ia = None
             usuario = None
-            pass
         self.HISTORIAL_IA.append(RES_IA)
         self.HISTORIAL_USUARIO.append(RES_USUARIO)
 

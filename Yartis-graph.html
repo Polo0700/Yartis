@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Yartis — Grafo de Dependencias</title>
+<style>
+  body { background:#1a1a2e; color:#eee; font-family:'Segoe UI',sans-serif; margin:0; padding:20px; }
+  h1 { text-align:center; color:#88c0ff; font-size:1.5rem; }
+  p.desc { text-align:center; color:#aaa; margin-top:-8px; font-size:.9rem; }
+  #graph { max-width:1200px; margin:20px auto; background:#222244; border-radius:12px; padding:20px; box-shadow:0 4px 20px rgba(0,0,0,.5); }
+</style>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  const graphText = document.getElementById('graphSrc').textContent.trim();
+  mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });
+  document.addEventListener('DOMContentLoaded', async () => {
+    const { svg } = await mermaid.render('graphSvg', graphText);
+    document.getElementById('graph').innerHTML = svg;
+  });
+</script>
+</head>
+<body>
+  <h1>🧠 Yartis — Grafo de Dependencias (desde CodeSight cache)</h1>
+  <p class="desc">Generado automáticamente desde <code>.codesight-cache.json</code> — 95 archivos indexados</p>
+  <div id="graph">Cargando...</div>
+  <script type="text/plain" id="graphSrc">
+flowchart TD
+    %% ============ CAPA PYTHON (Motor) ============
+    subgraph PYTHON["🐍 Capa Python — Motor"]
+        Y[<b>yartis.py</b><br/>Loop principal + WebSocket client]
+        WAKE[<b>core/wake.py</b><br/>Wake word "yartis"]
+        TRANS[<b>core/transcriber.py</b><br/>faster-whisper STT]
+        AUDIO[<b>core/audio.py</b><br/>Grabación + ruido]
+        CONF[<b>core/config.py</b><br/>Configuración]
+        SRV[<b>core/server.py</b><br/>WS Server → OpenCode]
+        OPC[<b>brain/opencode.py</b><br/>Cerebro → OpenCode]
+        CONTEXT[<b>brain/context.py</b><br/>Contexto]
+        VOICE[<b>brain/voice_id.py</b><br/>ID de voz]
+        CONFIRM[<b>brain/confirmacion.py</b><br/>Confirmación]
+        MUSIC[<b>servicios/musica.py</b><br/>Música]
+    end
+
+    %% ============ CAPA TAURI / RUST ============
+    subgraph RUST["🦀 Capa Rust — Tauri (Orquestador)"]
+        LIB[<b>src-tauri/src/lib.rs</b><br/>Puente WS → emit("message")]
+        MAINRS[<b>src-tauri/src/main.rs</b>]
+    end
+
+    %% ============ CAPA REACT ============
+    subgraph REACT["⚛️ Capa React — UI"]
+        MAIN[<b>src/main.tsx</b>]
+        APP[<b>src/App.tsx</b>]
+        HOOK[<b>src/hooks/useAssistant.ts</b>]
+        MENU[<b>components/Menu.tsx</b>]
+        DYN[<b>components/DynamicBody.tsx</b>]
+        VIEWS[<b>Vistas:</b><br/>Inicio · Ajustes · Acerca ·<br/>Ayuda · Reportes · Modelos ·<br/>Privacidad · InitialSettings]
+        STATUS[<b>components/StatusIndicator.tsx</b>]
+        CHSIZE[<b>components/ChangeSize.tsx</b>]
+    end
+
+    %% ==== Conexiones Python ====
+    Y --> WAKE
+    Y --> OPC
+    OPC --> TRANS
+    OPC --> MUSIC
+    CONFIRM --> AUDIO
+    CONFIRM --> TRANS
+    SRV --> OPC
+    TRANS --> AUDIO
+
+    %% ==== Puente Rust ====
+    LIB <--> SRV
+    MAINRS --> LIB
+
+    %% ==== React ====
+    MAIN --> APP
+    APP --> HOOK
+    APP --> DYN
+    APP --> STATUS
+    APP --> CHSIZE
+    MENU --> DYN
+    DYN --> VIEWS
+
+    %% ==== Puente Tauri → React ====
+    LIB -. "mensaje WS → WebView" .-> APP
+
+    %% ==== Estilos ====
+    classDef py fill:#2e5a87,stroke:#88c0ff,color:#fff
+    classDef rust fill:#b7410e,stroke:#ff9a5c,color:#fff
+    classDef react fill:#3a7d44,stroke:#8ce99a,color:#fff
+    classDef views fill:#5c5c8a,stroke:#b0b0ff,color:#fff
+
+    class Y,WAKE,TRANS,AUDIO,CONF,SRV,OPC,CONTEXT,VOICE,CONFIRM,MUSIC py
+    class LIB,MAINRS rust
+    class MAIN,APP,HOOK,MENU,DYN,STATUS,CHSIZE react
+    class VIEWS views
+  </script>
+</body>
+</html>

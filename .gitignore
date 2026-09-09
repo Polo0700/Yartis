@@ -46,3 +46,29 @@ _archive/
 # Voz grabada (biométrico)
 Yartis.wav
 assets/Jorge.wav
+my_voice.pt
+
+# Cachés de herramientas
+.codesight-cache.json
+codesight_report.json
+.superbased/
+
+# Temporales y runner
+temp*.wav
+test*.wav
+tempCodeRunnerFile.*
+prueba.py
+.pytest_cache/
+
+# Practicas / pruebas sueltas
+practica_bugs/
+
+# Media descargada o convertida (fuentes, canciones, exports)
+assets/canciones/
+assets/fonts/
+flecha.png
+flecha.jpeg
+flecha.webp
+
+# Runtime: credenciales de usuario (AES + Argon2 en disco)
+src-tauri/config/users/

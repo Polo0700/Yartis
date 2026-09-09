@@ -60,6 +60,9 @@ tempCodeRunnerFile.*
 prueba.py
 .pytest_cache/
 
+# Historial de conversación (crece infinito en runtime)
+historial*.txt
+
 # Practicas / pruebas sueltas
 practica_bugs/
 

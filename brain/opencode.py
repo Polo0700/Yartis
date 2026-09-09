@@ -11,6 +11,8 @@ from servicios.musica import music
 import ntplib
 import datetime
 import spacy
+from core.herramientas_crud import Herramientas
+from core.errores import obtener_error
 
 nlp = spacy.load("es_core_news_sm")
 # instancia compartida de música (singleton)
@@ -99,7 +101,7 @@ PERFIL_YARTIS = {
         ]
     }
 }
-SISTEMA = "INSTRUCCION: NO herramientas, NO ejecutar. Leer archivos hazlo directo.  Si piden crear/modificar/eliminar/mover archivos responde SOLO: 0x0x0Polo0700|crear|ruta|contenido|explicacion| 0x0x0Polo0700|eliminar|ruta|explicacion 0x0x0Polo0700|modificar|ruta|texto_viejo$$texto_nuevo|explicacion Para eliminar contenido va vacio. Para modificar texto_viejo$$texto_nuevo separado por $$. 0x0x0Polo0700|Mover|Ruta_inicial|Ruta_Final. Leer archivos hazlo directo. Para eliminar papelera reciclaje. Respuestas cortas sin saludos. si hay alguna informacion innecesaria para la peticion solo responde en su lugar por seccion como un ' ' estilo 0x0x0Polo0700|crear|D://users|es un ejemplo|' '|' ' REGLA CRITICA: Responde SOLO en texto plano. NUNCA uses emojis, markdown, asteriscos, negritas, guiones decorativos, ni formato alguno. Tu respuesta sera leida en voz alta por un sintetizador de voz. Si pones un emoji el sintetizador lo dice en voz alta y suena horrible."
+SISTEMA = "INSTRUCCION: NO herramientas, NO ejecutar. Leer archivos hazlo directo. Si piden crear/modificar/eliminar/mover archivos o directorios responde SOLO con el formato: 0x0x0Polo0700|accion|tipo|ruta|datos|explicacion|respuesta_rapida La accion es crear, modificar, eliminar o mover. El tipo es archivo o directorio. La ruta es donde esta o va. Los datos para crear es el contenido del archivo, para eliminar van vacio, para modificar texto_viejo$$texto_nuevo separado por $$, para mover es la ruta_final. Si un campo no se necesita se escribe none. En explicacion escribe none. La respuesta_rapida es una frase corta que se dice en voz alta mientras se ejecuta la accion, ejemplos: va, lo estoy creando o un momento. Sigue SIEMPRE el formato completo con todos los campos separados por pipe y la respuesta_rapida al final. Para eliminar usa papelera de reciclaje. Leer archivos hazlo directo sin usar 0x0x0Polo0700. Respuestas cortas sin saludos. REGLA CRITICA: Responde SOLO en texto plano. NUNCA uses emojis, markdown, asteriscos, negritas, guiones decorativos, ni formato alguno. Tu respuesta sera leida en voz alta por un sintetizador de voz. Si pones un emoji el sintetizador lo dice en voz alta y suena horrible."
 
 
 class peticion:
@@ -114,6 +116,8 @@ class peticion:
         self.lec = pyttsx3.init()
         self.tts = Transcribir()
         self.clasificacion = Clasificador()
+        self.accionador = Herramientas()
+        self.handler = obtener_error
 
         with open(CONFIG_PATH, "r", encoding="utf-8") as f:
             config = json.load(f)
@@ -180,25 +184,55 @@ class peticion:
         )
         self.output = result.stdout
         if "0x0x0Polo0700" in self.output:
-            seccion = self.output.split("|", 5)
-            utilidad_script = seccion
-            seccion = [seccion[0], seccion[1], seccion[4]]
-            respuesta = self.confirma.clasificar(seccion)
-            if respuesta != 1:
-                return None
-            if utilidad_script[1] == "crear":
-                if utilidad_script[2] == "directorio":
+            if self.output.endswith("1"):
+                verificacion = self.output.split("|")
+                if len(verificacion) < 7:
+                    bandera = "Error"
+                    error = self.handler("E_FORMATO")
                     cmd = [
-                        "mkdir",
-                        f"{utilidad_script[1]}",
-                        f"{utilidad_script[2]}",
+                        "opencode.cmd",
+                        "run",
+                        "--continue",
+                        f"Error en formato. {error['mensaje']}, {error['solucion']}",
                     ]
-                if utilidad_script[2] == "archivo":
-                    cmd = ["comando de crear archivo que no se xD"]
-                    await asyncio.to_thread(subprocess.run, cmd)
-            elif utilidad_script[1] == "eliminar":
-                cmd = ["mv", f"{utilidad_script[2]}", "papelera"]
-                await asyncio.to_thread(subprocess.run, cmd)
+                    result = await asyncio.to_thread(
+                        subprocess.run,
+                        cmd,
+                        capture_output=True,
+                        text=True,
+                        encoding="utf-8",
+                        errors="replace",
+                    )
+                    return bandera
+                seccion = self.output.split("|", 6)
+                utilidad_script = seccion
+                seccion = [seccion[0], seccion[1], seccion[4]]
+                respuesta = self.confirma.clasificar(seccion)
+                if respuesta != 1:
+                    return None
+                if utilidad_script[1] == "crear":
+                    if utilidad_script[2] == "directorio":
+                        cmd = self.accionador.crear_directorio(
+                            utilidad_script[3], utilidad_script[4]
+                        )
+                    if utilidad_script[2] == "archivo":
+                        cmd = self.accionador.crear_archivo(
+                            utilidad_script[3], utilidad_script[4]
+                        )
+                    res = [
+                        "opencode.cmd",
+                        "run",
+                        "--continue",
+                        f"{cmd}",
+                    ]
+                    await asyncio.to_thread(
+                        subprocess.run,
+                        res,
+                        capture_output=True,
+                        text=True,
+                        encoding="utf-8",
+                        errors="replace",
+                    )
             elif utilidad_script[1] == "modificar":
                 if utilidad_script[2] == "directorio":
                     cmd = ["mkdir", f"{seccion[1]}", f"{seccion[2]}"]
@@ -242,4 +276,6 @@ class peticion:
             )
             preguntas = []
         self.historial.agregar(self.output, self.texto)
+        if "0x0x0Polo0700" in self.output:
+            return utilidad_script[6]
         return self.output

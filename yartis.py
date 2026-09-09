@@ -66,7 +66,7 @@ class yartis:
             print("Wake word detectada, procesando petición...")
             print("Yartis escuchando peticion")
             respuesta = await self.peticion.ejecutar()
-            if not respuesta:
+            if not respuesta or respuesta == "Error":
                 continue
             try:
                 respuestaf = f"0x0x0Polo0702VozRes|{respuesta}"

@@ -1,20 +1,33 @@
 import os
 import pathlib
+from xml.sax import handler
 import psutil
 from pathlib import Path
 import win32com
+from core.errores import obtener_error
 
 
 class Herramientas:
-    def __init__(self):
-        self.herramienta = pathlib.Path(".")
+    def __init__(self, ruta="."):
+        self.herramienta = pathlib.Path(f"{ruta}")
         self.pathActual = Path.cwd()
+        self.handler = obtener_error
 
     # ===================== CRUD NÚCLEO =====================
 
-    def crear_archivo(self, nombre_archivo):
+    def crear_archivo(self, nombre_archivo, ruta):
+        if ruta is None:
+            ruta = self.pathActual
+        if not pathlib.Path(f"{ruta}").exists():
+            respuesta = self.handler("E_RUTA_INVALIDA")
+            return f"{respuesta['mensaje']} {respuesta['solucion']}"
+        self.herramienta = pathlib.Path(f"{ruta}")
         create_file = self.herramienta / nombre_archivo
+        if create_file.exists():
+            respuesta = self.handler("E_YA_EXISTE")
+            return f"{respuesta['mensaje']} {respuesta['solucion']}"
         create_file.touch(exist_ok=True)
+        return f"Archivo {nombre_archivo} creado en {ruta}"
 
     def eliminar_archivo(self, nombre_archivo):
         delete_file = self.herramienta / nombre_archivo
@@ -31,9 +44,19 @@ class Herramientas:
         new_file = self.herramienta / nueva_ruta
         old_file.rename(new_file)
 
-    def crear_directorio(self, nombre_directorio):
+    def crear_directorio(self, nombre_directorio, ruta):
+        if ruta is None:
+            ruta = self.pathActual
+        if not pathlib.Path(f"{ruta}").exists():
+            respuesta = self.handler("E_RUTA_INVALIDA")
+            return f"{respuesta['mensaje']} {respuesta['solucion']}"
+        self.herramienta = pathlib.Path(f"{ruta}")
         new_dir = self.herramienta / nombre_directorio
+        if new_dir.exists():
+            respuesta = self.handler("E_YA_EXISTE")
+            return f"{respuesta['mensaje']} {respuesta['solucion']}"
         new_dir.mkdir(exist_ok=True)
+        return f"Directorio {nombre_directorio} creado en {ruta}"
 
     def eliminar_directorio(self, nombre_directorio):
         del_dir = self.herramienta / nombre_directorio

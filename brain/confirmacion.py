@@ -117,4 +117,4 @@ class confirmador:
             return self.respuesta
         else:
             self.hablar("no respondiste nada")
-            self.preguntar()
+            return self.preguntar()

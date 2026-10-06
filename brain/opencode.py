@@ -233,18 +233,18 @@ class peticion:
                         encoding="utf-8",
                         errors="replace",
                     )
-            elif utilidad_script[1] == "modificar":
-                if utilidad_script[2] == "directorio":
-                    cmd = ["mkdir", f"{seccion[1]}", f"{seccion[2]}"]
-                if utilidad_script[2] == "archivo":
-                    if utilidad_script[3] == "nombre":
-                        cmd = ["comando para cambiar nombre de archivo"]
-                    elif utilidad_script[3] == "contenido":
-                        cmd = ["comando de recrear el archivo que no se xD"]
-                        await asyncio.to_thread(subprocess.run, cmd)
-            elif utilidad_script[1] == "mover":
-                cmd = ["mv", f"{utilidad_script[2]}", f"{utilidad_script[6]}"]
-                await asyncio.to_thread(subprocess.run, cmd)
+                elif utilidad_script[1] == "modificar":
+                    if utilidad_script[2] == "directorio":
+                        cmd = ["mkdir", f"{seccion[1]}", f"{seccion[2]}"]
+                    if utilidad_script[2] == "archivo":
+                        if utilidad_script[3] == "nombre":
+                            cmd = ["comando para cambiar nombre de archivo"]
+                        elif utilidad_script[3] == "contenido":
+                            cmd = ["comando de recrear el archivo que no se xD"]
+                            await asyncio.to_thread(subprocess.run, cmd)
+                elif utilidad_script[1] == "mover":
+                    cmd = ["mv", f"{utilidad_script[2]}", f"{utilidad_script[6]}"]
+                    await asyncio.to_thread(subprocess.run, cmd)
         if "1x1x1Polo0700" in self.output:
             preguntas = []
             result = self.output.split("|")

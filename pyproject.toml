@@ -34,3 +34,8 @@ dependencies = [
 dev = [
     "pytest>=9.0.3",
 ]
+
+[tool.pytest.ini_options]
+# scripts interactivos con input() a nivel modulo: cuelgan la coleccion de pytest
+testpaths = ["tests"]
+addopts = "--ignore=tests/test_music.py --ignore=tests/test_mano.py"

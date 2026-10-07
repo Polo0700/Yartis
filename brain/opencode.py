@@ -246,6 +246,25 @@ class peticion:
                     cmd = ["mv", f"{utilidad_script[2]}", f"{utilidad_script[6]}"]
                     await asyncio.to_thread(subprocess.run, cmd)
         if "1x1x1Polo0700" in self.output:
+            letraF = ""
+            if self.output.endswith("1"):
+                letraF = "1"
+
+            if self.output.endswith(letraF):
+                cmd = [
+                    "opencode.cmd",
+                    "run",
+                    "--continue",
+                    "Error en formato." + self.output,
+                ]
+                await asyncio.to_thread(
+                    subprocess.run,
+                    cmd,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
             preguntas = []
             result = self.output.split("|")
             total_preguntas = int(result[-1])
